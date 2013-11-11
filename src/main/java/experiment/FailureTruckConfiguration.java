@@ -1,9 +1,8 @@
 package experiment;
 
-import javax.annotation.Nullable;
 
-import rinde.logistics.pdptw.mas.Truck;
-import rinde.logistics.pdptw.mas.TruckConfiguration;
+import truck.Truck;
+import truck.TruckConfiguration;
 import rinde.logistics.pdptw.mas.comm.Communicator;
 import rinde.logistics.pdptw.mas.route.RoutePlanner;
 import rinde.sim.core.Simulator;
@@ -15,7 +14,6 @@ import rinde.sim.util.SupplierRng;
 
 import com.google.common.collect.ImmutableList;
 
-import failures.FailureModel;
 import failures.FallibleTruck;
 
 public class FailureTruckConfiguration extends TruckConfiguration {

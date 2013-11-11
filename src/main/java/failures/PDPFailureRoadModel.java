@@ -33,7 +33,11 @@ public class PDPFailureRoadModel extends PDPRoadModel implements FallibleRoadMod
 	public MoveProgress moveTo(MovingRoadUser object,
 			RoadUser destinationRoadUser, TimeLapse time) {
 		if(object instanceof FallibleEntity){
-			checkArgument(!this.failureModel.isFailing(time, (FallibleEntity) object));
+//			checkArgument(!this.failureModel.isFailing(time, (FallibleEntity) object));
+//			if(!this.failureModel.isFailing(time, (FallibleEntity) object))
+//				return super.moveTo(object, destinationRoadUser, time);
+//			else
+//				return null;
 		}
 		return super.moveTo(object, destinationRoadUser, time);
 

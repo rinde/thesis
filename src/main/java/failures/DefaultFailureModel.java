@@ -2,11 +2,12 @@ package failures;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.distribution.PoissonDistribution;
+import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import rinde.sim.core.TimeLapse;
 import rinde.sim.util.SupplierRng;
@@ -15,13 +16,12 @@ import rinde.sim.util.TimeWindow;
 
 public class DefaultFailureModel implements FailureModel {
 	private int maxFailuresPerVehicle;
-	private double failureMean; //per second? per day?
-	private	long lengthOfDay = 29000000l;
-
+	private double failureMean; //per day
+	private	long lengthOfDay = 86400000l;
+							   
 	private HashMap<FallibleEntity,HashSet<FailureDTO>> failures = new HashMap<FallibleEntity, HashSet<FailureDTO>>();
 	private long currentTime;
 	public boolean register(FallibleEntity element) {
-		// TODO Auto-generated method stub
 		element.setFailureModel(this);
 		this.failures.put(element,new HashSet<FailureDTO>());
 		
@@ -46,11 +46,11 @@ public class DefaultFailureModel implements FailureModel {
 		return false;
 	}
 	public void initializeFailureDurationDistribution(double mean, double standardDeviation){
-		this.normalDistribution=new NormalDistribution(mean, standardDeviation);
+		this.normalDistribution=new NormalDistribution(this.random,mean, standardDeviation,NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
 	}
 	public void setFailureMeanPerDay(double meanFailures){
 		this.failureMean=meanFailures;
-		this.poisssonDistribution=new PoissonDistribution(this.failureMean);
+		this.poisssonDistribution = new PoissonDistribution(this.random, failureMean, PoissonDistribution.DEFAULT_EPSILON, PoissonDistribution.DEFAULT_MAX_ITERATIONS);
 	}
 	public void setMaxFailures(int maxFailures){
 		this.maxFailuresPerVehicle=maxFailures;
@@ -60,7 +60,7 @@ public class DefaultFailureModel implements FailureModel {
 		// TODO Auto-generated method stub
 		return FallibleEntity.class;
 	}
-	private Random random;
+	private RandomGenerator random;
 
 
 	public Set<FallibleEntity> getCurrentFailures() {
@@ -86,18 +86,20 @@ public class DefaultFailureModel implements FailureModel {
 	    return false;
 	}
 	public DefaultFailureModel(long seed, double failureMeanPerDay, int maxFailures, double meanDuration, double stdDuration){
+		this.random=new JDKRandomGenerator();
+		this.random.setSeed(seed);
 		this.setFailureMeanPerDay(failureMeanPerDay);
 		this.setMaxFailures(maxFailures);
 		this.initializeFailureDurationDistribution(meanDuration, stdDuration);
 		
-		this.random=new Random(seed);
+
 		
 	}
 	//TODO: make configurable
 	public static SupplierRng<DefaultFailureModel> supplier() {
 		return new DefaultSupplierRng<DefaultFailureModel>() {
 			public DefaultFailureModel get (long seed) {
-				DefaultFailureModel failureModel = new DefaultFailureModel(seed,0.5,3,40000,2000);
+				DefaultFailureModel failureModel = new DefaultFailureModel(seed,0.5,3,3600000,600000);
 				return failureModel;
 				
 			}
@@ -109,24 +111,5 @@ public class DefaultFailureModel implements FailureModel {
 	}
 	
 	
-//	public void tick(TimeLapse timeLapse) {
-//		// TODO Auto-generated method stub
-//	    currentTime = timeLapse.getStartTime();
-//	    for(FallibleEntity entity: failures.keySet()){
-//	    	FailureDTO failure = this.failures.get(entity);
-//	    	if(failure!=null && this.currentTime >= failure.failureTimeWindow.begin && this.currentTime <= failure.failureTimeWindow.end){
-//	    		entity.notifyOfFailure();
-//	    		this.roadModel.notifyOfFailure(entity);
-//	    		
-//	    	}
-//	    }
-//	    	
-//		
-//	}
-//	
-//	public void afterTick(TimeLapse timeLapse) {
-//		// TODO Auto-generated method stub
-//		this.roadModel.unregisterFailures();
-//	}
 
 }
