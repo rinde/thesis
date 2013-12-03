@@ -8,7 +8,6 @@ import javax.measure.unit.SI;
 
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
-import org.eclipse.swt.SWT;
 
 import rinde.logistics.pdptw.mas.comm.Communicator;
 import rinde.logistics.pdptw.mas.comm.InsertionCostBidder;
@@ -37,7 +36,6 @@ import rinde.sim.ui.renderers.RoadUserRenderer;
 import rinde.sim.util.SupplierRng;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import experiment.FailureScenario;
 import experiment.FailureTruckConfiguration;

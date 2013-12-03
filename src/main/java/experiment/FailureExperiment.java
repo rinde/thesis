@@ -12,10 +12,12 @@ import rinde.logistics.pdptw.mas.TruckConfiguration;
 import rinde.logistics.pdptw.mas.comm.AuctionCommModel;
 import rinde.logistics.pdptw.mas.comm.Communicator;
 import rinde.logistics.pdptw.mas.comm.InsertionCostBidder;
+import rinde.logistics.pdptw.mas.comm.NegotiatingBidder;
 import rinde.logistics.pdptw.mas.comm.RandomBidder;
 import rinde.logistics.pdptw.mas.route.GotoClosestRoutePlanner;
 import rinde.logistics.pdptw.mas.route.RandomRoutePlanner;
 import rinde.logistics.pdptw.mas.route.RoutePlanner;
+import rinde.logistics.pdptw.mas.route.SolverRoutePlanner;
 import rinde.logistics.pdptw.solver.MultiVehicleHeuristicSolver;
 import rinde.sim.core.model.Model;
 import rinde.sim.pdptw.central.Central;
@@ -49,8 +51,11 @@ public class FailureExperiment {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 //		gendreau();
+//		failureExperiment_Random(false);
 //		failureExperiment_Random(true);
-//		auctionExperiment(true);
+//		auctionExperiment(false);
+		auctionExperiment(true);
+//		negotiatingExperiment(true);
 		centralExperiment(true);
 		
 	}
@@ -88,8 +93,10 @@ public class FailureExperiment {
 		if(failuresEnabled){
 			config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
 		}
-		else
+		else{
+
 			config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
+		}
 		performExperiment(failureScenarios, objectiveFunction, config);
 	}
 
@@ -108,19 +115,36 @@ public class FailureExperiment {
 		}
 		return failureScenarios;
 	}
+	public static void negotiatingExperiment(boolean failuresEnabled){
+		List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
+		Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
+
+		SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplier(MultiVehicleHeuristicSolver.supplier(200, 50000));
+		SupplierRng<? extends Communicator> communicatorSupplier= NegotiatingBidder.supplier(objectiveFunction, MultiVehicleHeuristicSolver.supplier(200,50000)) ;
+		ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(),AuctionCommModel.supplier());
+		MASConfiguration config;
+		if(failuresEnabled){
+			config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
+		}
+		else{
+			config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
+		}
+		performExperiment(failureScenarios, objectiveFunction, config);
+	}
 	public static void auctionExperiment(boolean failuresEnabled){
 		List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
 		Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
 
-		SupplierRng<? extends RoutePlanner> routePlannerSupplier=GotoClosestRoutePlanner.supplier();
+		SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplier(MultiVehicleHeuristicSolver.supplier(60, 200));
 		SupplierRng<? extends Communicator> communicatorSupplier= InsertionCostBidder.supplier(objectiveFunction) ;
 		ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(),AuctionCommModel.supplier());
 		MASConfiguration config;
 		if(failuresEnabled){
 			config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
 		}
-		else
+		else{
 			config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
+		}
 		performExperiment(failureScenarios, objectiveFunction, config);
 	}
 	public static void centralExperiment(boolean failuresEnabled){
@@ -151,9 +175,8 @@ public class FailureExperiment {
 				.addScenarios(failureScenarios)
 				.addConfiguration(config)				
 				.withRandomSeed(321)
-				.repeat(2)
+				.repeat(10)
 				.withThreads(1)
-				.showGui()
 				.perform();
 		writeGendreauResults(offlineResults);
 	}

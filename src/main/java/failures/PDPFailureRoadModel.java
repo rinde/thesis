@@ -26,7 +26,6 @@ public class PDPFailureRoadModel extends PDPRoadModel implements FallibleRoadMod
 	    failureModel =mp.getModel(FailureModel.class);
 	    pdpModel = Optional.fromNullable(mp.getModel(PDPModel.class));
 //	    failureModel = Optional.fromNullable(mp.getModel(FailureModel.class));
-
 	    
 	}
 	@Override
@@ -34,9 +33,10 @@ public class PDPFailureRoadModel extends PDPRoadModel implements FallibleRoadMod
 			RoadUser destinationRoadUser, TimeLapse time) {
 		if(object instanceof FallibleEntity){
 //			checkArgument(!this.failureModel.isFailing(time, (FallibleEntity) object));
-//			if(!this.failureModel.isFailing(time, (FallibleEntity) object))
-//				return super.moveTo(object, destinationRoadUser, time);
-//			else
+			if(!this.failureModel.isFailing(time, (FallibleEntity) object))
+				return super.moveTo(object, destinationRoadUser, time);
+//			else 
+//				((FallibleEntity) object).printState();
 //				return null;
 		}
 		return super.moveTo(object, destinationRoadUser, time);
