@@ -49,12 +49,7 @@ public class FailureTruckConfiguration extends TruckConfiguration {
 	  //TODO: random seed to get function
 	  protected Truck createTruck(VehicleDTO dto, RoutePlanner rp, Communicator c) {
 	    FallibleTruck truck= new FallibleTruck(dto, rp, c);
-//	    Model<?> model2 = mSuppliers.get(0).get(1l);
-//	    @Nullable
-//	    FailureModel model=null;
-//	    if(model2 instanceof FailureModel)
-//	    	model = (FailureModel) model2;
-//		truck.setFailureModel(model);
+
 	    return truck;
 	  }
 	

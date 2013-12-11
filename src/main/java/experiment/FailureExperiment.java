@@ -13,6 +13,7 @@ import rinde.logistics.pdptw.mas.comm.AuctionCommModel;
 import rinde.logistics.pdptw.mas.comm.Communicator;
 import rinde.logistics.pdptw.mas.comm.InsertionCostBidder;
 import rinde.logistics.pdptw.mas.comm.NegotiatingBidder;
+import rinde.logistics.pdptw.mas.comm.NegotiatingBidder.SelectNegotiatorsHeuristic;
 import rinde.logistics.pdptw.mas.comm.RandomBidder;
 import rinde.logistics.pdptw.mas.route.GotoClosestRoutePlanner;
 import rinde.logistics.pdptw.mas.route.RandomRoutePlanner;
@@ -44,206 +45,229 @@ import failures.DefaultFailureModel;
 
 public class FailureExperiment {
 
-	public FailureExperiment() {
-		// TODO Auto-generated constructor stub
-	}
+  public FailureExperiment() {
+    // TODO Auto-generated constructor stub
+  }
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-//		gendreau();
-//		failureExperiment_Random(false);
-//		failureExperiment_Random(true);
-//		auctionExperiment(false);
-		auctionExperiment(true);
-//		negotiatingExperiment(true);
-		centralExperiment(true);
-		
-	}
-	public static void gendreau(){
-		 System.out.println("offline");
-		    final Gendreau06Scenarios offlineScenarios = new Gendreau06Scenarios(
-		        "scenarios/", false, GendreauProblemClass.values());
-		    SupplierRng<? extends RoutePlanner> routePlannerSupplier=RandomRoutePlanner.supplier();
-			SupplierRng<? extends Communicator> communicatorSupplier=RandomBidder.supplier();
-			ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers = ImmutableList.of(AuctionCommModel.supplier());
-		    final ObjectiveFunction objFunc = new Gendreau06ObjectiveFunction();
+  public static void main(String[] args) {
+    // TODO Auto-generated method stub
+    //		gendreau();
+//    		failureExperiment_Random(false);
+//    		failureExperiment_Random(true);
+    		auctionExperiment(true);
+//    negotiatingExperiment(true);
+    //		centralExperiment(true);
 
-			final ExperimentResults offlineResults = Experiment
-					 .build(new Gendreau06ObjectiveFunction())
-				        .addScenarios(offlineScenarios.provide())
-				        .withRandomSeed(321)
-				        .repeat(2)
-				        .withThreads(1)
-				        .showGui()
-				        .addConfiguration(
-				        		new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers))
+  }
+  public static void gendreau(){
+    System.out.println("offline");
+    final Gendreau06Scenarios offlineScenarios = new Gendreau06Scenarios(
+        "scenarios/", false, GendreauProblemClass.values());
+    SupplierRng<? extends RoutePlanner> routePlannerSupplier=RandomRoutePlanner.supplier();
+    SupplierRng<? extends Communicator> communicatorSupplier=RandomBidder.supplier();
+    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers = ImmutableList.of(AuctionCommModel.supplier());
+    final ObjectiveFunction objFunc = new Gendreau06ObjectiveFunction();
 
-				        .perform();
-		    writeGendreauResults(offlineResults);
-	}
+    final ExperimentResults offlineResults = Experiment
+        .build(new Gendreau06ObjectiveFunction())
+        .addScenarios(offlineScenarios.provide())
+        .withRandomSeed(321)
+        .repeat(2)
+        .withThreads(1)
+        .showGui()
+        .addConfiguration(
+            new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers))
 
-	public static void failureExperiment_Random(boolean failuresEnabled){
-		List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
-		Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
-		SupplierRng<? extends RoutePlanner> routePlannerSupplier=RandomRoutePlanner.supplier();
-		SupplierRng<? extends Communicator> communicatorSupplier= RandomBidder.supplier() ;
+            .perform();
+    writeGendreauResults(offlineResults);
+  }
 
-		ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(),AuctionCommModel.supplier());
-		MASConfiguration config;
-		if(failuresEnabled){
-			config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-		}
-		else{
+  public static void failureExperiment_Random(boolean failuresEnabled){
+    List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
+    Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
+    SupplierRng<? extends RoutePlanner> routePlannerSupplier=RandomRoutePlanner.supplier();
+    SupplierRng<? extends Communicator> communicatorSupplier= RandomBidder.supplier() ;
 
-			config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-		}
-		performExperiment(failureScenarios, objectiveFunction, config);
-	}
+    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(),AuctionCommModel.supplier());
+    MASConfiguration config;
+    if(failuresEnabled){
+      config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
+    }
+    else{
 
-	private static List<DynamicPDPTWScenario> createFailureScenarios() {
-		final Gendreau06Scenarios offlineScenarios = new Gendreau06Scenarios(
-				"scenarios/", true, GendreauProblemClass.values());
-		List<DynamicPDPTWScenario> failureScenarios = new LinkedList<DynamicPDPTWScenario>();
+      config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
+    }
+    performExperiment(failureScenarios, objectiveFunction, config);
+  }
 
-		for(DynamicPDPTWScenario scenario: offlineScenarios.provide()){
-			long ts=scenario.getTickSize();
-			GendreauProblemClass problemClass=(GendreauProblemClass) scenario.getProblemClass();
-			int instanceNumber=Integer.valueOf(scenario.getProblemInstanceId());
+  private static List<DynamicPDPTWScenario> createFailureScenarios() {
+    final Gendreau06Scenarios offlineScenarios = new Gendreau06Scenarios(
+        "scenarios/", true, GendreauProblemClass.values());
+    List<DynamicPDPTWScenario> failureScenarios = new LinkedList<DynamicPDPTWScenario>();
 
-			FailureScenario failureScenario = new FailureScenario(scenario.asList(), scenario.getPossibleEventTypes(), ts, problemClass, instanceNumber);
-			failureScenarios.add(failureScenario);
-		}
-		return failureScenarios;
-	}
-	public static void negotiatingExperiment(boolean failuresEnabled){
-		List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
-		Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
+    for(DynamicPDPTWScenario scenario: offlineScenarios.provide()){
+      long ts=scenario.getTickSize();
+      GendreauProblemClass problemClass=(GendreauProblemClass) scenario.getProblemClass();
+      int instanceNumber=Integer.valueOf(scenario.getProblemInstanceId());
 
-		SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplier(MultiVehicleHeuristicSolver.supplier(200, 50000));
-		SupplierRng<? extends Communicator> communicatorSupplier= NegotiatingBidder.supplier(objectiveFunction, MultiVehicleHeuristicSolver.supplier(200,50000)) ;
-		ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(),AuctionCommModel.supplier());
-		MASConfiguration config;
-		if(failuresEnabled){
-			config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-		}
-		else{
-			config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-		}
-		performExperiment(failureScenarios, objectiveFunction, config);
-	}
-	public static void auctionExperiment(boolean failuresEnabled){
-		List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
-		Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
+      FailureScenario failureScenario = new FailureScenario(scenario.asList(), scenario.getPossibleEventTypes(), ts, problemClass, instanceNumber);
+      failureScenarios.add(failureScenario);
+    }
+    return failureScenarios;
+  }
+  public static void negotiatingExperiment(boolean failuresEnabled){
+    final Gendreau06Scenarios offlineScenarios = new Gendreau06Scenarios(
+        "scenarios/", true, GendreauProblemClass.values());
+    List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
+    Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
 
-		SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplier(MultiVehicleHeuristicSolver.supplier(60, 200));
-		SupplierRng<? extends Communicator> communicatorSupplier= InsertionCostBidder.supplier(objectiveFunction) ;
-		ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(),AuctionCommModel.supplier());
-		MASConfiguration config;
-		if(failuresEnabled){
-			config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-		}
-		else{
-			config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-		}
-		performExperiment(failureScenarios, objectiveFunction, config);
-	}
-	public static void centralExperiment(boolean failuresEnabled){
-		List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
-		final Gendreau06Scenarios offlineScenarios = new Gendreau06Scenarios(
-				"scenarios/", true, GendreauProblemClass.values());
-		Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
+    SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplier(MultiVehicleHeuristicSolver.supplier(200, 50000));
 
-		SupplierRng<? extends RoutePlanner> routePlannerSupplier=GotoClosestRoutePlanner.supplier();
-		SupplierRng<? extends Communicator> communicatorSupplier= InsertionCostBidder.supplier(objectiveFunction) ;
-		ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(),AuctionCommModel.supplier());
-		MASConfiguration config=Central.solverConfiguration(MultiVehicleHeuristicSolver.supplier(60, 200), "-Offline");
-		if(failuresEnabled){
-			performExperiment(failureScenarios, objectiveFunction, config);
+    SupplierRng<? extends Communicator> communicatorSupplier= NegotiatingBidder.supplier(objectiveFunction, MultiVehicleHeuristicSolver.supplier(20,10000), MultiVehicleHeuristicSolver.supplier(200, 50000), 2, SelectNegotiatorsHeuristic.FIRST_DESTINATION_POSITION) ;
 
-		}
-		else
-			performExperiment(offlineScenarios.provide(), objectiveFunction, config);
 
-	}
+    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(),AuctionCommModel.supplier());
+    MASConfiguration config;
+    if(failuresEnabled){
+      config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
+      performExperiment(failureScenarios, objectiveFunction, config);
+    }
+    else{
+      config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
+      performExperiment(offlineScenarios.provide(), objectiveFunction, config);
+    }
+  }
+  public static void auctionExperiment(boolean failuresEnabled){
+    final Gendreau06Scenarios offlineScenarios = new Gendreau06Scenarios(
+        "scenarios/", true, GendreauProblemClass.values());
+    List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
+    Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
 
-	private static void performExperiment(
-			List<DynamicPDPTWScenario> failureScenarios,
-			Gendreau06ObjectiveFunction objectiveFunction,
-			MASConfiguration config) {
-		final ExperimentResults offlineResults = Experiment
-				.build(objectiveFunction)
-				.addScenarios(failureScenarios)
-				.addConfiguration(config)				
-				.withRandomSeed(321)
-				.repeat(10)
-				.withThreads(1)
-				.perform();
-		writeGendreauResults(offlineResults);
-	}
-	static void writeGendreauResults(ExperimentResults results) {
+    SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplier(MultiVehicleHeuristicSolver.supplier(60, 200));
+    SupplierRng<? extends Communicator> communicatorSupplier= InsertionCostBidder.supplier(objectiveFunction) ;
+    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(),AuctionCommModel.supplier());
+    MASConfiguration config;
+    if(failuresEnabled){
+      config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
+      performExperiment(failureScenarios, objectiveFunction, config);
 
-	    final Table<MASConfiguration, ProblemClass, StringBuilder> table = HashBasedTable
-	        .create();
+    }
+    else{
+      config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
+      performExperiment(offlineScenarios.provide(), objectiveFunction, config);
 
-	    checkArgument(results.objectiveFunction instanceof Gendreau06ObjectiveFunction);
-	    final Gendreau06ObjectiveFunction obj = (Gendreau06ObjectiveFunction) results.objectiveFunction;
+    }
+  }
+  public static void centralExperiment(boolean failuresEnabled){
+    List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
+    final Gendreau06Scenarios offlineScenarios = new Gendreau06Scenarios(
+        "scenarios/", true, GendreauProblemClass.values());
+    Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
 
-	    for (final SimulationResult r : results.results) {
-	      final MASConfiguration config = r.masConfiguration;
-	      final ProblemClass pc = r.scenario.getProblemClass();
+    SupplierRng<? extends RoutePlanner> routePlannerSupplier=GotoClosestRoutePlanner.supplier();
+    SupplierRng<? extends Communicator> communicatorSupplier= InsertionCostBidder.supplier(objectiveFunction) ;
+    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(),AuctionCommModel.supplier());
+    MASConfiguration config=Central.solverConfiguration(MultiVehicleHeuristicSolver.supplier(60, 200), "-Offline");
+    if(failuresEnabled){
+      performExperiment(failureScenarios, objectiveFunction, config);
 
-	      if (!table.contains(config, pc)) {
-	        table
-	            .put(
-	                config,
-	                pc,
-	                new StringBuilder(
-	                    "seed,instance,duration,frequency,cost,tardiness,travelTime,overTime,computationTime\n"));
-	      }
-	      final StringBuilder sb = table.get(config, pc);
+    }
+    else
+      performExperiment(offlineScenarios.provide(), objectiveFunction, config);
 
-	      final GendreauProblemClass gpc = (GendreauProblemClass) pc;
-	      /* seed */
-	      sb.append(r.seed).append(",")
-	      /* instance */
-	      .append(r.scenario.getProblemInstanceId()).append(",")
-	      /* duration */
-	      .append(gpc.duration).append(",")
-	      /* frequency */
-	      .append(gpc.frequency).append(",")
-	      /* cost */
-	      .append(obj.computeCost(r.stats)).append(',')
-	      /* tardiness */
-	      .append(obj.tardiness(r.stats)).append(',')
-	      /* travelTime */
-	      .append(obj.travelTime(r.stats)).append(',')
-	      /* overTime */
-	      .append(obj.overTime(r.stats)).append(',')
-	      /* computation time */
-	      .append(r.stats.computationTime).append("\n");
-	    }
-	    final Set<Cell<MASConfiguration, ProblemClass, StringBuilder>> set = table
-	    		.cellSet();
-	    for (final Cell<MASConfiguration, ProblemClass, StringBuilder> cell : set) {
-	    	try {
-	    		final File dir = new File("files/results/gendreau"
-	    				+ cell.getColumnKey().getId());
-	    		if (!dir.exists() || !dir.isDirectory()) {
-	    			Files.createParentDirs(dir);
-	    			dir.mkdir();
-	    		}
-	    		final File file = new File(dir.getPath() + "/"
-	    				+ cell.getRowKey().toString() + "_" + results.masterSeed
-	    				+ cell.getColumnKey().getId() + ".txt");
-	    		if (file.exists()) {
-	    			file.delete();
-	    		}
+  }
 
-	    		Files.write(cell.getValue().toString(), file, Charsets.UTF_8);
-	    	} catch (final IOException e) {
-	    		throw new RuntimeException(e);
-	    	}
-	    }
-	}
+  private static void performExperiment(
+      List<DynamicPDPTWScenario> failureScenarios,
+      Gendreau06ObjectiveFunction objectiveFunction,
+      MASConfiguration config) {
+    final ExperimentResults offlineResults = Experiment
+        .build(objectiveFunction)
+        .addScenarios(failureScenarios)
+        .addConfiguration(config)				
+        .withRandomSeed(320)
+        .repeat(20)
+        .withThreads(1)
+        .perform();
+    writeGendreauResults(offlineResults);
+  }
+  static void writeGendreauResults(ExperimentResults results) {
+
+    final Table<MASConfiguration, ProblemClass, StringBuilder> table = HashBasedTable
+        .create();
+
+    checkArgument(results.objectiveFunction instanceof Gendreau06ObjectiveFunction);
+    final Gendreau06ObjectiveFunction obj = (Gendreau06ObjectiveFunction) results.objectiveFunction;
+    double costSum=0;
+    ProblemClass probclass = null;
+    MASConfiguration masconfig = null;
+    for (final SimulationResult r : results.results) {
+      final MASConfiguration config = r.masConfiguration;
+      final ProblemClass pc = r.scenario.getProblemClass();
+      probclass= pc;
+      masconfig = config;
+      
+      if (!table.contains(config, pc)) {
+        table
+        .put(
+            config,
+            pc,
+            new StringBuilder(
+                "seed,instance,duration,frequency,cost,tardiness,travelTime,overTime,computationTime\n"));
+      }
+      final StringBuilder sb = table.get(config, pc);
+
+      final GendreauProblemClass gpc = (GendreauProblemClass) pc;
+      /* seed */
+      double computeCost = obj.computeCost(r.stats);
+      costSum+=computeCost;
+      sb.append(r.seed).append(",")
+      /* instance */
+      .append(r.scenario.getProblemInstanceId()).append(",")
+      /* duration */
+      .append(gpc.duration).append(",")
+      /* frequency */
+      .append(gpc.frequency).append(",")
+      /* cost */
+      .append(computeCost).append(',')
+      /* tardiness */
+      .append(obj.tardiness(r.stats)).append(',')
+      /* travelTime */
+      .append(obj.travelTime(r.stats)).append(',')
+      /* overTime */
+      .append(obj.overTime(r.stats)).append(',')
+      /* computation time */
+      .append(r.stats.computationTime).append("\n");
+    }
+    double mean = costSum / results.results.size();
+    System.out.println(results.results.size());
+    final StringBuilder sb = table.get(masconfig, probclass);
+    sb.append(mean);
+
+    
+    
+    final Set<Cell<MASConfiguration, ProblemClass, StringBuilder>> set = table
+        .cellSet();
+    for (final Cell<MASConfiguration, ProblemClass, StringBuilder> cell : set) {
+      try {
+        final File dir = new File("files/results/gendreau"
+            + cell.getColumnKey().getId());
+        if (!dir.exists() || !dir.isDirectory()) {
+          Files.createParentDirs(dir);
+          dir.mkdir();
+        }
+        final File file = new File(dir.getPath() + "/"
+            + cell.getRowKey().toString() + "_" + results.masterSeed
+            + cell.getColumnKey().getId() + ".txt");
+        if (file.exists()) {
+          file.delete();
+        }
+
+        Files.write(cell.getValue().toString(), file, Charsets.UTF_8);
+      } catch (final IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
 
 }
