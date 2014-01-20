@@ -1,5 +1,6 @@
 package failures;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +22,15 @@ public class DefaultFailureModel implements FailureModel {
 							   
 	private HashMap<FallibleEntity,HashSet<FailureDTO>> failures = new HashMap<FallibleEntity, HashSet<FailureDTO>>();
 	private long currentTime;
+	private ArrayList<Integer> failuresPerScenario = new ArrayList<Integer>();
+	private int currentScenario=-1;
+	private int currentTrucksInScenario;
+	private int totalTrucksPerScenario=10;
+	private int numberFailures=0;
+	public void getFailuresPerScenario(){
+//	  System.out.println(numberFailures);
+	}
+
 	public boolean register(FallibleEntity element) {
 		element.setFailureModel(this);
 		this.failures.put(element,new HashSet<FailureDTO>());
@@ -35,6 +45,19 @@ public class DefaultFailureModel implements FailureModel {
 			this.failures.get(element).add(new FailureDTO (new TimeWindow(start, start+duration)));
 
 		}
+
+//		if(currentTrucksInScenario==totalTrucksPerScenario){
+//		  currentTrucksInScenario=0;
+//		  currentScenario++;
+//		  failuresPerScenario.add(0);
+//		}
+//		currentTrucksInScenario++;
+//		Integer current = failuresPerScenario.get(currentScenario)+amountOfFailures;
+//		this.numberFailures+=amountOfFailures;
+//		failuresPerScenario.add(currentScenario, current);
+//    if(currentTrucksInScenario==totalTrucksPerScenario){
+//      getFailuresPerScenario();
+//    }
 		return true;
 	}
 	private PoissonDistribution poisssonDistribution;
@@ -91,7 +114,8 @@ public class DefaultFailureModel implements FailureModel {
 		this.setFailureMeanPerDay(failureMeanPerDay);
 		this.setMaxFailures(maxFailures);
 		this.initializeFailureDurationDistribution(meanDuration, stdDuration);
-		
+		this.totalTrucksPerScenario=10;
+		this.currentTrucksInScenario=this.totalTrucksPerScenario;
 
 		
 	}
@@ -99,7 +123,7 @@ public class DefaultFailureModel implements FailureModel {
 	public static SupplierRng<DefaultFailureModel> supplier() {
 		return new DefaultSupplierRng<DefaultFailureModel>() {
 			public DefaultFailureModel get (long seed) {
-				DefaultFailureModel failureModel = new DefaultFailureModel(seed,0.2,2,14400000,600000);
+				DefaultFailureModel failureModel = new DefaultFailureModel(seed,0.4,15,3600000,600000);
 				return failureModel;
 				
 			}

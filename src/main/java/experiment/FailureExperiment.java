@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+
 import rinde.logistics.pdptw.mas.TruckConfiguration;
 import rinde.logistics.pdptw.mas.comm.AuctionCommModel;
 import rinde.logistics.pdptw.mas.comm.Communicator;
@@ -55,7 +57,7 @@ public class FailureExperiment {
 //    		failureExperiment_Random(false);
 //    		failureExperiment_Random(true);
     		auctionExperiment(true);
-//    negotiatingExperiment(true);
+    negotiatingExperiment(true);
     //		centralExperiment(true);
 
   }
@@ -145,7 +147,8 @@ public class FailureExperiment {
 
     SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplier(MultiVehicleHeuristicSolver.supplier(60, 200));
     SupplierRng<? extends Communicator> communicatorSupplier= InsertionCostBidder.supplier(objectiveFunction) ;
-    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(),AuctionCommModel.supplier());
+    SupplierRng<DefaultFailureModel> failureModel = DefaultFailureModel.supplier();
+    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(failureModel,AuctionCommModel.supplier());
     MASConfiguration config;
     if(failuresEnabled){
       config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
@@ -186,8 +189,9 @@ public class FailureExperiment {
         .addScenarios(failureScenarios)
         .addConfiguration(config)				
         .withRandomSeed(320)
-        .repeat(20)
+        .repeat(30)
         .withThreads(1)
+//        .showGui()
         .perform();
     writeGendreauResults(offlineResults);
   }
@@ -199,9 +203,12 @@ public class FailureExperiment {
     checkArgument(results.objectiveFunction instanceof Gendreau06ObjectiveFunction);
     final Gendreau06ObjectiveFunction obj = (Gendreau06ObjectiveFunction) results.objectiveFunction;
     double costSum=0;
+    double[] costValues = new double[results.results.size()];
     ProblemClass probclass = null;
     MASConfiguration masconfig = null;
+    int i =0;
     for (final SimulationResult r : results.results) {
+      
       final MASConfiguration config = r.masConfiguration;
       final ProblemClass pc = r.scenario.getProblemClass();
       probclass= pc;
@@ -221,6 +228,7 @@ public class FailureExperiment {
       /* seed */
       double computeCost = obj.computeCost(r.stats);
       costSum+=computeCost;
+      costValues[i]=computeCost;
       sb.append(r.seed).append(",")
       /* instance */
       .append(r.scenario.getProblemInstanceId()).append(",")
@@ -238,11 +246,16 @@ public class FailureExperiment {
       .append(obj.overTime(r.stats)).append(',')
       /* computation time */
       .append(r.stats.computationTime).append("\n");
+      i++;
     }
     double mean = costSum / results.results.size();
+    StandardDeviation standardDeviation= new StandardDeviation();
+    double std = standardDeviation.evaluate(costValues);
     System.out.println(results.results.size());
     final StringBuilder sb = table.get(masconfig, probclass);
     sb.append(mean);
+    sb.append("std=");
+    sb.append(std);
 
     
     

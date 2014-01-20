@@ -28,6 +28,9 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 		super(pDto, rp, c);
 
 	}
+	public boolean isFailing(){
+	  return isFailing;
+	}
 
 	@Override
 	protected StateMachine<StateEvent, RouteFollowingVehicle> createStateMachine() {
@@ -85,9 +88,9 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 	}
 
 	public void handleEvent(Event e) {
-	  if(!isFailing){
+//	  if(!isFailing){
 	    super.handleEvent(e);
-	  }
+//	  }
 //		if (e.getEventType() != CommunicatorEventType.CHANGE) {
 //			@SuppressWarnings("unchecked")
 //			final StateTransitionEvent<StateEvent, RouteFollowingVehicle> event = (StateTransitionEvent<StateEvent, RouteFollowingVehicle>) e;
@@ -137,7 +140,7 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 		@Override
 	  public void onEntry(StateEvent event, RouteFollowingVehicle context) {
 			setRoute(new LinkedList<DefaultParcel>());
-
+			System.out.println("failure");
 //      if(pdpModel.get().getContents(context).size()>1)
 //        System.out.println("Dropping more than one parcel");
 //      dropNextParcel(context);
@@ -155,7 +158,6 @@ public class FallibleTruck extends Truck implements FallibleEntity {
     }
 		@Override
 		public void onExit(StateEvent event, RouteFollowingVehicle context){
-		  System.out.println();
 		}
 		@Override
 		public StateEvent handle(StateEvent event, RouteFollowingVehicle context) {
@@ -164,7 +166,7 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 //		  }
 
 
-//		  getCurrentTime().consumeAll();
+		  getCurrentTime().consumeAll();
 
 		  if(event==null&&!failing){
 		    return FailureEvent.RECOVERY;

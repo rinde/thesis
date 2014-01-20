@@ -218,6 +218,11 @@ public class Test {
 			
 		}
 
+    public boolean isFailing() {
+      // TODO Auto-generated method stub
+      return false;
+    }
+
  }
 
 }

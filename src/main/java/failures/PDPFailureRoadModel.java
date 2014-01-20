@@ -25,34 +25,20 @@ public class PDPFailureRoadModel extends PDPRoadModel implements FallibleRoadMod
 	public void registerModelProvider(ModelProvider mp) {
 	    failureModel =mp.getModel(FailureModel.class);
 	    pdpModel = Optional.fromNullable(mp.getModel(PDPModel.class));
-//	    failureModel = Optional.fromNullable(mp.getModel(FailureModel.class));
 	    
 	}
 	@Override
 	public MoveProgress moveTo(MovingRoadUser object,
 			RoadUser destinationRoadUser, TimeLapse time) {
 		if(object instanceof FallibleEntity){
-//			checkArgument(!this.failureModel.isFailing(time, (FallibleEntity) object));
-			if(!this.failureModel.isFailing(time, (FallibleEntity) object))
-				return super.moveTo(object, destinationRoadUser, time);
-//			else 
-//				((FallibleEntity) object).printState();
-//				return null;
+		  FallibleEntity test = (FallibleEntity) object;
+			checkArgument(!test.isFailing());
 		}
 		return super.moveTo(object, destinationRoadUser, time);
 
 	}
-//	private HashSet<FallibleEntity> failures = new HashSet<FallibleEntity>();
 	public FailureModel failureModel;
-//	public void notifyOfFailure(FallibleEntity failingEntity) {
-//		// TODO Auto-generated method stub
-//		failures.add(failingEntity);
-//	}
-//
-//	public void unregisterFailures() {
-//		// TODO Auto-generated method stub
-//		failures.clear();
-//	}
+
 	
 
 }
