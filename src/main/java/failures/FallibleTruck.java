@@ -140,7 +140,7 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 		@Override
 	  public void onEntry(StateEvent event, RouteFollowingVehicle context) {
 			setRoute(new LinkedList<DefaultParcel>());
-			System.out.println("failure");
+			System.out.print("failure/");
 //      if(pdpModel.get().getContents(context).size()>1)
 //        System.out.println("Dropping more than one parcel");
 //      dropNextParcel(context);

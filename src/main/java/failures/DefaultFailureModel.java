@@ -18,7 +18,7 @@ import rinde.sim.util.TimeWindow;
 public class DefaultFailureModel implements FailureModel {
 	private int maxFailuresPerVehicle;
 	private double failureMean; //per day
-	private	long lengthOfDay = 43200000l;
+	private	long lengthOfDay = 14400000l; //4uur
 							   
 	private HashMap<FallibleEntity,HashSet<FailureDTO>> failures = new HashMap<FallibleEntity, HashSet<FailureDTO>>();
 	private long currentTime;

@@ -32,5 +32,14 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/Users/maartenchristiaen/.m2/repository/com/github/rinde/rinsim-problem/2.3.0-SNAPSHOT/rinsim-problem-2.3.0-SNAPSHOT.jar" sourcepath="/Users/maartenchristiaen/.m2/repository/com/github/rinde/rinsim-problem/2.3.0-SNAPSHOT/rinsim-problem-2.3.0-SNAPSHOT-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="com.github.rinde"/>
+			<attribute name="maven.artifactId" value="rinsim-problem"/>
+			<attribute name="maven.version" value="2.3.0-SNAPSHOT"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
