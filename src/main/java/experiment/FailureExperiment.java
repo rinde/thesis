@@ -12,11 +12,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
-
+import util.InsertionCostBidder;
 import rinde.logistics.pdptw.mas.TruckConfiguration;
 import rinde.logistics.pdptw.mas.comm.AuctionCommModel;
 import rinde.logistics.pdptw.mas.comm.Communicator;
-import rinde.logistics.pdptw.mas.comm.InsertionCostBidder;
 import rinde.logistics.pdptw.mas.comm.NegotiatingBidder;
 import rinde.logistics.pdptw.mas.comm.NegotiatingBidder.SelectNegotiatorsHeuristic;
 import rinde.logistics.pdptw.mas.comm.RandomBidder;
@@ -59,8 +58,8 @@ public class FailureExperiment {
     //		gendreau();
 //    		failureExperiment_Random(false);
 //    		failureExperiment_Random(true);
-//    		auctionExperiment(false);
-//    		workLoadInsertionExperiment(true);
+//    		auctionExperiment(true);
+    		workLoadInsertionExperiment(true);
     		freeTimeInsertionExperiment(true);
 //    negotiatingExperiment(true);
 //    		centralExperiment(true);
@@ -264,7 +263,7 @@ public class FailureExperiment {
         .addScenarios(failureScenarios)
         .addConfiguration(config)				
         .withRandomSeed(320)
-        .repeat(10)
+        .repeat(30)
         .withThreads(threads)
 //        .showGui()
         .perform();

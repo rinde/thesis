@@ -1,5 +1,10 @@
 package failures;
 
+import javax.measure.Measure;
+import javax.measure.quantity.Duration;
+import javax.measure.quantity.Length;
+import javax.measure.unit.Unit;
+
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.Model;
 
@@ -12,7 +17,6 @@ public interface FailureModel extends Model<FallibleEntity> {
 	public void setMaxFailures(int maxFailures);
 	public void setFailureMeanPerDay(double meanFailures);
 	public void initializeFailureDurationDistribution(double mean, double standardDeviation);
-
-
 //	public void setFailureRate(double failureRate);
+  public long computeTravelTime(long time);
 }

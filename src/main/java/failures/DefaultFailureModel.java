@@ -5,6 +5,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.measure.Measure;
+import javax.measure.quantity.Duration;
+import javax.measure.quantity.Length;
+import javax.measure.unit.Unit;
+
+import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
@@ -62,6 +68,7 @@ public class DefaultFailureModel implements FailureModel {
 	}
 	private PoissonDistribution poisssonDistribution;
 	private NormalDistribution normalDistribution;
+	private NormalDistribution travelTimeDistribution;
 
 	public boolean unregister(FallibleEntity element) {
 		// TODO Auto-generated method stub
@@ -108,6 +115,7 @@ public class DefaultFailureModel implements FailureModel {
 	    }
 	    return false;
 	}
+	
 	public DefaultFailureModel(long seed, double failureMeanPerDay, int maxFailures, double meanDuration, double stdDuration){
 		this.random=new JDKRandomGenerator();
 		this.random.setSeed(seed);
@@ -116,14 +124,14 @@ public class DefaultFailureModel implements FailureModel {
 		this.initializeFailureDurationDistribution(meanDuration, stdDuration);
 		this.totalTrucksPerScenario=10;
 		this.currentTrucksInScenario=this.totalTrucksPerScenario;
-
+		this.travelTimeDistribution=new NormalDistribution(random, 1.0, 1.0, NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
 		
 	}
 	//TODO: make configurable
 	public static SupplierRng<DefaultFailureModel> supplier() {
 		return new DefaultSupplierRng<DefaultFailureModel>() {
 			public DefaultFailureModel get (long seed) {
-				DefaultFailureModel failureModel = new DefaultFailureModel(seed,0.4,15,3600000,600000);
+				DefaultFailureModel failureModel = new DefaultFailureModel(seed,0.000000001,15,1800000,300000);
 				return failureModel;
 				
 			}
@@ -133,6 +141,23 @@ public class DefaultFailureModel implements FailureModel {
 		currentTime = time;
 	    return isCurrentlyFailing(entity);
 	}
+
+
+
+  public long computeTravelTime(long time) {
+    // TODO Auto-generated method stub
+//    System.out.println(time);
+
+    
+    double sample = this.travelTimeDistribution.sample();
+    if(sample<0.8){
+      sample=0.8;
+    }
+    long newTime = (long) (time*sample);
+    
+
+    return newTime;
+  }
 	
 	
 

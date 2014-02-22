@@ -3,11 +3,17 @@ package failures;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import javax.measure.Measure;
+import javax.measure.quantity.Duration;
+import javax.measure.quantity.Length;
+import javax.measure.unit.Unit;
+
 import rinde.logistics.pdptw.mas.Truck;
 import rinde.logistics.pdptw.mas.comm.Communicator;
 import rinde.logistics.pdptw.mas.comm.Communicator.CommunicatorEventType;
 import rinde.logistics.pdptw.mas.route.RoutePlanner;
 import rinde.sim.core.TimeLapse;
+import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.Parcel;
 import rinde.sim.event.Event;
 import rinde.sim.event.EventDispatcher;
@@ -31,6 +37,14 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 	public boolean isFailing(){
 	  return isFailing;
 	}
+	@Override
+  protected long computeTravelTimeTo(Point p, Unit<Duration> timeUnit) {
+    long travelTime=super.computeTravelTimeTo(p, timeUnit);
+    
+    return this.failureModel.computeTravelTime(travelTime);
+    
+    
+  }
 
 	@Override
 	protected StateMachine<StateEvent, RouteFollowingVehicle> createStateMachine() {

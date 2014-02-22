@@ -16,29 +16,30 @@ import rinde.sim.pdptw.common.PDPRoadModel;
 
 public class PDPFailureRoadModel extends PDPRoadModel implements FallibleRoadModel {
 
-	public PDPFailureRoadModel(AbstractRoadModel<?> rm,
-			boolean allowVehicleDiversion) {
-		super(rm, allowVehicleDiversion);
-		// TODO Auto-generated constructor stub
-	}
-	@Override
-	public void registerModelProvider(ModelProvider mp) {
-	    failureModel =mp.getModel(FailureModel.class);
-	    pdpModel = Optional.fromNullable(mp.getModel(PDPModel.class));
-	    
-	}
-	@Override
-	public MoveProgress moveTo(MovingRoadUser object,
-			RoadUser destinationRoadUser, TimeLapse time) {
-		if(object instanceof FallibleEntity){
-		  FallibleEntity test = (FallibleEntity) object;
-			checkArgument(!test.isFailing());
-		}
-		return super.moveTo(object, destinationRoadUser, time);
+  public PDPFailureRoadModel(AbstractRoadModel<?> rm,
+      boolean allowVehicleDiversion) {
+    super(rm, allowVehicleDiversion);
+    // TODO Auto-generated constructor stub
+  }
+  @Override
+  public void registerModelProvider(ModelProvider mp) {
+    super.registerModelProvider(mp);
+    failureModel =mp.getModel(FailureModel.class);
 
-	}
-	public FailureModel failureModel;
 
-	
+  }
+  @Override
+  public MoveProgress moveTo(MovingRoadUser object,
+      RoadUser destinationRoadUser, TimeLapse time) {
+    if(object instanceof FallibleEntity){
+      FallibleEntity test = (FallibleEntity) object;
+      checkArgument(!test.isFailing());
+    }
+    return super.moveTo(object, destinationRoadUser, time);
+
+  }
+  public FailureModel failureModel;
+
+
 
 }
