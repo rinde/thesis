@@ -11,8 +11,9 @@ public class FreeTimeObjectiveFunction extends Gendreau06ObjectiveFunction imple
   }
   private double freeTimeCoefficient=1;
   private double speed=30;
-  private double max = 100000.0;
+  private double max = 10000.0;
   private double power = 4;
+  
   
 
   public double computeCost(StatisticsDTO stats) {
@@ -36,13 +37,18 @@ public class FreeTimeObjectiveFunction extends Gendreau06ObjectiveFunction imple
 //    double poweredFreeTime = -Math.pow(freeTime,power);
 
     if(-poweredFreeTime>max){
-      System.out.println("too low");
+      throw new IllegalArgumentException("too low");
     }
 
     return Math.max(0, freeTimeCoefficient*(poweredFreeTime+max));
     
 //    double freeTime = stats.simulationTime/3600000-stats.totalDistance/speed;
 //    return Math.max(0, freeTimeCoefficient*(-Math.pow(freeTime, power)+max));
+  }
+
+  public double getMax() {
+    // TODO Auto-generated method stub
+    return max;
   }
 
 }

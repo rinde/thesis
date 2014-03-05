@@ -7,6 +7,7 @@ public class WorkloadObjectiveFunction extends Gendreau06ObjectiveFunction imple
 
   private double workLoadCoefficient=1;
   private double power= 2;
+  private double maxParcels= 80;
 
 	public double computeCost(StatisticsDTO stats) {
 		// TODO Auto-generated method stub
@@ -25,7 +26,15 @@ public class WorkloadObjectiveFunction extends Gendreau06ObjectiveFunction imple
   public double getAddedObjectiveCost(StatisticsDTO stats) {
     // TODO Auto-generated method stub
     int totalParcels = stats.totalParcels;
+    if(totalParcels>maxParcels){
+      throw new IllegalArgumentException("maximum parcels has been exceeded");
+    }
     return (Math.pow(totalParcels,power))*workLoadCoefficient;
+  }
+
+  public double getMax() {
+    // TODO Auto-generated method stub
+    return Math.pow(maxParcels, power);
   }
 
 }

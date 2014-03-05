@@ -8,6 +8,8 @@ import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
+import com.google.common.collect.ImmutableSet;
+
 import rinde.logistics.pdptw.mas.Truck;
 import rinde.logistics.pdptw.mas.comm.Communicator;
 import rinde.logistics.pdptw.mas.comm.Communicator.CommunicatorEventType;
@@ -37,14 +39,14 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 	public boolean isFailing(){
 	  return isFailing;
 	}
-	@Override
-  protected long computeTravelTimeTo(Point p, Unit<Duration> timeUnit) {
-    long travelTime=super.computeTravelTimeTo(p, timeUnit);
-    
-    return this.failureModel.computeTravelTime(travelTime);
-    
-    
-  }
+//	@Override
+//  protected long computeTravelTimeTo(Point p, Unit<Duration> timeUnit) {
+//    long travelTime=super.computeTravelTimeTo(p, timeUnit);
+//    
+//    return this.failureModel.computeTravelTime(travelTime);
+//    
+//    
+//  }
 
 	@Override
 	protected StateMachine<StateEvent, RouteFollowingVehicle> createStateMachine() {
@@ -153,8 +155,11 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 		}
 		@Override
 	  public void onEntry(StateEvent event, RouteFollowingVehicle context) {
-			setRoute(new LinkedList<DefaultParcel>());
-			System.out.print("failure/");
+//			setRoute(new LinkedList<DefaultParcel>());
+//		  ImmutableSet<DefaultParcel> contents =pdpModel.get().getContents(context);
+//      setRoute(contents);
+//			System.out.print("failure/");
+			failureModel.indicateIsFailing();
 //      if(pdpModel.get().getContents(context).size()>1)
 //        System.out.println("Dropping more than one parcel");
 //      dropNextParcel(context);

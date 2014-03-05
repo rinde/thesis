@@ -28,11 +28,12 @@ public class DefaultFailureModel implements FailureModel {
 							   
 	private HashMap<FallibleEntity,HashSet<FailureDTO>> failures = new HashMap<FallibleEntity, HashSet<FailureDTO>>();
 	private long currentTime;
-	private ArrayList<Integer> failuresPerScenario = new ArrayList<Integer>();
-	private int currentScenario=-1;
-	private int currentTrucksInScenario;
-	private int totalTrucksPerScenario=10;
+//	private ArrayList<Integer> failuresPerScenario = new ArrayList<Integer>();
+//	private int currentScenario=-1;
+//	private int currentTrucksInScenario;
+//	private int totalTrucksPerScenario=10;
 	private int numberFailures=0;
+	private int actualNumberOfFailures=0;
 	public void getFailuresPerScenario(){
 //	  System.out.println(numberFailures);
 	}
@@ -45,6 +46,7 @@ public class DefaultFailureModel implements FailureModel {
 		if(amountOfFailures>this.maxFailuresPerVehicle){
 			amountOfFailures=this.maxFailuresPerVehicle;
 		}
+		numberFailures+=amountOfFailures;
 		for(int i=0; i<amountOfFailures;i++){
 			long start = (long) (random.nextDouble()*lengthOfDay);
 			long duration = (long) this.normalDistribution.sample();
@@ -122,16 +124,16 @@ public class DefaultFailureModel implements FailureModel {
 		this.setFailureMeanPerDay(failureMeanPerDay);
 		this.setMaxFailures(maxFailures);
 		this.initializeFailureDurationDistribution(meanDuration, stdDuration);
-		this.totalTrucksPerScenario=10;
-		this.currentTrucksInScenario=this.totalTrucksPerScenario;
-		this.travelTimeDistribution=new NormalDistribution(random, 1.0, 1.0, NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
+//		this.totalTrucksPerScenario=10;
+//		this.currentTrucksInScenario=this.totalTrucksPerScenario;
+		this.travelTimeDistribution=new NormalDistribution(random, 1.0, 4.0, NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
 		
 	}
 	//TODO: make configurable
 	public static SupplierRng<DefaultFailureModel> supplier() {
 		return new DefaultSupplierRng<DefaultFailureModel>() {
 			public DefaultFailureModel get (long seed) {
-				DefaultFailureModel failureModel = new DefaultFailureModel(seed,0.000000001,15,1800000,300000);
+				DefaultFailureModel failureModel = new DefaultFailureModel(seed,0.0004,15,3600000,600000);
 				return failureModel;
 				
 			}
@@ -145,18 +147,30 @@ public class DefaultFailureModel implements FailureModel {
 
 
   public long computeTravelTime(long time) {
+    return time;
+
+
+    
+//    double sample = this.travelTimeDistribution.sample();
+//    if(sample<0.8){
+//      sample=0.8;
+//    }
+//    long newTime = (long) (time*sample);
+//    
+//
+//    return newTime;
+  }
+
+  @Override
+  public void indicateIsFailing() {
     // TODO Auto-generated method stub
-//    System.out.println(time);
+    actualNumberOfFailures++;
+  }
 
-    
-    double sample = this.travelTimeDistribution.sample();
-    if(sample<0.8){
-      sample=0.8;
-    }
-    long newTime = (long) (time*sample);
-    
-
-    return newTime;
+  @Override
+  public int getAmountOfFailures() {
+    // TODO Auto-generated method stub
+    return this.actualNumberOfFailures;
   }
 	
 	

@@ -19,4 +19,6 @@ public interface FailureModel extends Model<FallibleEntity> {
 	public void initializeFailureDurationDistribution(double mean, double standardDeviation);
 //	public void setFailureRate(double failureRate);
   public long computeTravelTime(long time);
+  public void indicateIsFailing();
+  public int getAmountOfFailures();
 }

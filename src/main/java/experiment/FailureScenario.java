@@ -55,7 +55,7 @@ public class FailureScenario extends DynamicPDPTWScenario{
 	@Override
 	public RoadModel createRoadModel() {
 		PlaneRoadModel roadModel = new PlaneRoadModel(MIN, MAX, 50);
-		PDPFailureRoadModel failureRoadModel = new PDPFailureRoadModel(roadModel, false);
+		PDPFailureRoadModel failureRoadModel = new PDPFailureRoadModel(roadModel, true);
 		return failureRoadModel;
 //    return new PDPRoadModel(new PlaneRoadModel(MIN, MAX, getDistanceUnit(),
 //        MAX_SPEED), true);
@@ -97,13 +97,6 @@ public class FailureScenario extends DynamicPDPTWScenario{
 				.and(StopCondition.TIME_OUT_EVENT).build();
 	}
 
-
-	@Override
-	protected FailureScenario newInstance(
-			Collection<? extends TimedEvent> events) {
-		return new FailureScenario(events, getPossibleEventTypes(), tickSize,
-				problemClass, instanceNumber);
-	}
 
 	@Override
 	public ProblemClass getProblemClass() {

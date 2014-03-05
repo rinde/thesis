@@ -10,10 +10,10 @@ public class FailureObjectiveFunction extends Gendreau06ObjectiveFunction {
 
   public FailureObjectiveFunction() {
     // TODO Auto-generated constructor stub
-    this.objectives.put(new FreeTimeObjectiveFunction(),Math.pow(10, 0));
-    this.objectives.put(new WorkloadObjectiveFunction(),1.0);
+    this.objectiveWeights.put(new FreeTimeObjectiveFunction(),100.0);
+    this.objectiveWeights.put(new WorkloadObjectiveFunction(),10000.0);
   }
-  private Map<AddedObjective,Double> objectives = new HashMap<AddedObjective,Double>();
+  private Map<AddedObjective,Double> objectiveWeights = new HashMap<AddedObjective,Double>();
   public double computeCost(StatisticsDTO stats) {
     // TODO Auto-generated method stub
     double regularCost = super.computeCost(stats);
@@ -25,10 +25,10 @@ public class FailureObjectiveFunction extends Gendreau06ObjectiveFunction {
   private double calculateAddedCost(StatisticsDTO stats) {
     double addedCost = 0;
     
-    for (AddedObjective objective : this.objectives.keySet()) {
-      double cost = this.objectives.get(objective)*objective.getAddedObjectiveCost(stats);
+    for (AddedObjective objective : this.objectiveWeights.keySet()) {
+      double cost = this.objectiveWeights.get(objective)*(objective.getAddedObjectiveCost(stats)/objective.getMax());
+//      System.out.println(objective.toString()+ " : "+ cost);
       addedCost+=cost;
-//      System.out.println(cost);
     }
     return addedCost;
   }
