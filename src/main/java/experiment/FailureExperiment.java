@@ -25,7 +25,6 @@ import rinde.logistics.pdptw.mas.route.SolverRoutePlanner;
 import rinde.logistics.pdptw.solver.CheapestInsertionHeuristic;
 import rinde.logistics.pdptw.solver.MultiVehicleHeuristicSolver;
 import rinde.sim.core.model.Model;
-import rinde.sim.pdptw.central.Central;
 import rinde.sim.pdptw.common.DynamicPDPTWScenario;
 import rinde.sim.pdptw.common.DynamicPDPTWScenario.ProblemClass;
 import rinde.sim.pdptw.experiment.Experiment;
@@ -37,6 +36,7 @@ import rinde.sim.pdptw.gendreau06.Gendreau06Parser;
 import rinde.sim.pdptw.gendreau06.Gendreau06Scenario;
 import rinde.sim.pdptw.gendreau06.GendreauProblemClass;
 import rinde.sim.util.SupplierRng;
+import central.Central;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.HashBasedTable;
@@ -66,7 +66,7 @@ public class FailureExperiment {
 //    freeTime_negotiatingExperiment(true);
 //    workload_negotiatingExperiment(true);
 //        negotiatingExperiment(true);
-        		centralExperiment(false);
+        		centralExperiment(true);
 //        combinedHeuristicsInsertionExperiment(true);
 
   }
@@ -282,7 +282,7 @@ public class FailureExperiment {
 //    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier());
     MASConfiguration config=Central.solverConfiguration(MultiVehicleHeuristicSolver.supplier(60, 200), "-Online");
     if(failuresEnabled){
-      performExperiment(failureScenarios, objectiveFunction, config, 1, 150);
+      performExperiment(failureScenarios, objectiveFunction, config, 5, 150);
 
     }
     else
