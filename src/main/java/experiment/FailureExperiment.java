@@ -61,8 +61,8 @@ public class FailureExperiment {
     //		gendreau();
     //    		failureExperiment_Random(false);
     //    		failureExperiment_Random(true);
-//        		workLoadInsertionExperiment(true);
-//        		freeTimeInsertionExperiment(true);
+        		workLoadInsertionExperiment(true);
+        		freeTimeInsertionExperiment(true);
 //            auctionExperiment(true);
 //    freeTime_negotiatingExperiment(true);
 //    workload_negotiatingExperiment(true);
@@ -301,7 +301,7 @@ public class FailureExperiment {
         .addConfiguration(config)				
         .withRandomSeed(320)
         .repeat(runs).usePostProcessor(new FailurePostProcessor())
-        .withThreads(1)
+        .withThreads(10)
         //        .showGui()
         .perform();
     writeGendreauResults(offlineResults);

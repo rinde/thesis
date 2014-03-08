@@ -1,0 +1,6 @@
+Amount of failures: 4. Samples: 14. Average: 2349.03655295798. Std: 758.9104856962196
+Amount of failures: 5. Samples: 19. Average: 2690.567549818464. Std: 466.16241104549994
+Amount of failures: 6. Samples: 19. Average: 3259.8572149640204. Std: 776.1769210167984
+Amount of failures: 7. Samples: 32. Average: 3789.175567197114. Std: 826.010606647307
+Amount of failures: 8. Samples: 22. Average: 3838.26552824473. Std: 746.4453240705807
+Amount of failures: 9. Samples: 18. Average: 4368.916655079688. Std: 938.8597713089566
