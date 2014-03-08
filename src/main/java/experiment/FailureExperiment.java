@@ -36,6 +36,7 @@ import rinde.sim.pdptw.gendreau06.Gendreau06Parser;
 import rinde.sim.pdptw.gendreau06.Gendreau06Scenario;
 import rinde.sim.pdptw.gendreau06.GendreauProblemClass;
 import rinde.sim.util.SupplierRng;
+import analyse.Analyser;
 import central.Central;
 
 import com.google.common.base.Charsets;
@@ -65,8 +66,8 @@ public class FailureExperiment {
 //            auctionExperiment(true);
 //    freeTime_negotiatingExperiment(true);
 //    workload_negotiatingExperiment(true);
-//        negotiatingExperiment(true);
-        		centralExperiment(true);
+//        negotiatingExperiment(false);
+//        		centralExperiment(false);
 //        combinedHeuristicsInsertionExperiment(true);
 
   }
@@ -87,7 +88,7 @@ public class FailureExperiment {
 
       config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
     }
-    performExperiment(failureScenarios, objectiveFunction, config, 1, 150);
+    performExperiment(failureScenarios, objectiveFunction, config, 150, "random.txt");
   }
 
   private static List<DynamicPDPTWScenario> createFailureScenarios() {
@@ -120,11 +121,11 @@ public class FailureExperiment {
     MASConfiguration config;
     if(failuresEnabled){
       config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(failureScenarios, objectiveFunction, config, 1, 150);
+      performExperiment(failureScenarios, objectiveFunction, config, 150, "negotiating.txt");
     }
     else{
       config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(offlineScenarios, objectiveFunction, config, 1, 30);
+      performExperiment(offlineScenarios, objectiveFunction, config, 30, "negotiating.txt");
     }
   }
   public static void freeTime_negotiatingExperiment(boolean failuresEnabled){
@@ -141,11 +142,11 @@ public class FailureExperiment {
     MASConfiguration config;
     if(failuresEnabled){
       config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(failureScenarios, objectiveFunction, config, 1, 150);
+      performExperiment(failureScenarios, objectiveFunction, config, 150, "freetime_negotiating.txt");
     }
     else{
       config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(offlineScenarios, objectiveFunction, config, 1, 30);
+      performExperiment(offlineScenarios, objectiveFunction, config, 30, "x.txt");
     }
   }
   public static void workload_negotiatingExperiment(boolean failuresEnabled){
@@ -162,11 +163,11 @@ public class FailureExperiment {
     MASConfiguration config;
     if(failuresEnabled){
       config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(failureScenarios, objectiveFunction, config, 1, 100);
+      performExperiment(failureScenarios, objectiveFunction, config, 100, "workload_negotiating.txt");
     }
     else{
       config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(offlineScenarios, objectiveFunction, config, 1, 30);
+      performExperiment(offlineScenarios, objectiveFunction, config, 30, "x.txt");
     }
   }
   public static void auctionExperiment(boolean failuresEnabled){
@@ -183,12 +184,12 @@ public class FailureExperiment {
     MASConfiguration config;
     if(failuresEnabled){
       config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(failureScenarios, objectiveFunction, config, 1, 150);
+      performExperiment(failureScenarios, objectiveFunction, config, 150, "insertion.txt");
 
     }
     else{
       config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(offlineScenarios, objectiveFunction, config, 10, 30);
+      performExperiment(offlineScenarios, objectiveFunction, config, 30, "x.txt");
 
     }
   }
@@ -208,12 +209,12 @@ public class FailureExperiment {
     MASConfiguration config;
     if(failuresEnabled){
       config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(failureScenarios, objectiveFunction, config, 1, 150);
+      performExperiment(failureScenarios, objectiveFunction, config, 150, "workload_insertion.txt");
 
     }
     else{
       config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(offlineScenarios, objectiveFunction, config, 10, 150);
+      performExperiment(offlineScenarios, objectiveFunction, config, 150, "x.txt");
 
     }
   }
@@ -232,12 +233,12 @@ public class FailureExperiment {
     MASConfiguration config;
     if(failuresEnabled){
       config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(failureScenarios, objectiveFunction, config, 1, 150);
+      performExperiment(failureScenarios, objectiveFunction, config, 150, "combined_insertion.txt");
 
     }
     else{
       config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(offlineScenarios, objectiveFunction, config, 10, 30);
+      performExperiment(offlineScenarios, objectiveFunction, config, 30, "x.txt");
 
     }
   }
@@ -265,12 +266,12 @@ public class FailureExperiment {
     MASConfiguration config;
     if(failuresEnabled){
       config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(failureScenarios, objectiveFunction, config, 1, 150);
+      performExperiment(failureScenarios, objectiveFunction, config, 150, "freetimeinsertion.txt");
 
     }
     else{
       config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(onlineScenarios, objectiveFunction, config, 10, 150);
+      performExperiment(onlineScenarios, objectiveFunction, config, 150, "x.txt");
 
     }
   }
@@ -282,28 +283,29 @@ public class FailureExperiment {
 //    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier());
     MASConfiguration config=Central.solverConfiguration(MultiVehicleHeuristicSolver.supplier(60, 200), "-Online");
     if(failuresEnabled){
-      performExperiment(failureScenarios, objectiveFunction, config, 5, 150);
+      performExperiment(failureScenarios, objectiveFunction, config, 150, "central.txt");
 
     }
     else
-      performExperiment(offlineScenarios, objectiveFunction, config, 1, 30);
+      performExperiment(offlineScenarios, objectiveFunction, config, 30, "x.txt");
 
   }
 
   private static void performExperiment(
       List<? extends DynamicPDPTWScenario> onlineScenarios,
       Gendreau06ObjectiveFunction objectiveFunction,
-      MASConfiguration config, int threads, int runs) {
+      MASConfiguration config, int runs, String fileName) {
     final ExperimentResults offlineResults = Experiment
         .build(objectiveFunction)
         .addScenarios(onlineScenarios)
         .addConfiguration(config)				
         .withRandomSeed(320)
         .repeat(runs).usePostProcessor(new FailurePostProcessor())
-        .withThreads(threads)
+        .withThreads(1)
         //        .showGui()
         .perform();
     writeGendreauResults(offlineResults);
+    new Analyser(fileName);
   }
   static void writeGendreauResults(ExperimentResults results) {
 
@@ -386,8 +388,12 @@ public class FailureExperiment {
         if (file.exists()) {
           file.delete();
         }
-
+        final File result = new File("result.txt");
+        if(result.exists()){
+          result.delete();
+        }
         Files.write(cell.getValue().toString(), file, Charsets.UTF_8);
+        Files.write(cell.getValue().toString(), result,Charsets.UTF_8);
       } catch (final IOException e) {
         throw new RuntimeException(e);
       }

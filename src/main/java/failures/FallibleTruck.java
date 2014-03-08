@@ -8,6 +8,7 @@ import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
 import javax.measure.unit.Unit;
 
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 
 import rinde.logistics.pdptw.mas.Truck;
@@ -156,8 +157,16 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 		@Override
 	  public void onEntry(StateEvent event, RouteFollowingVehicle context) {
 //			setRoute(new LinkedList<DefaultParcel>());
-//		  ImmutableSet<DefaultParcel> contents =pdpModel.get().getContents(context);
-//      setRoute(contents);
+//		  ImmutableSet<Parcel> contents =pdpModel.get().getContents(context);
+//      LinkedList<DefaultParcel> newRoute =new LinkedList<DefaultParcel>();
+
+//		  for(Parcel p: contents){
+//        if(p instanceof DefaultParcel){
+//          DefaultParcel parcel = (DefaultParcel) p;
+//          newRoute.add(parcel);
+//        }
+//      }
+//      setRoute(newRoute);
 //			System.out.print("failure/");
 			failureModel.indicateIsFailing();
 //      if(pdpModel.get().getContents(context).size()>1)

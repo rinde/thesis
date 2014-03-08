@@ -133,7 +133,7 @@ public class DefaultFailureModel implements FailureModel {
 	public static SupplierRng<DefaultFailureModel> supplier() {
 		return new DefaultSupplierRng<DefaultFailureModel>() {
 			public DefaultFailureModel get (long seed) {
-				DefaultFailureModel failureModel = new DefaultFailureModel(seed,0.8,15,3600000,600000);
+				DefaultFailureModel failureModel = new DefaultFailureModel(seed,1,15,3600000,600000);
 				return failureModel;
 				
 			}
