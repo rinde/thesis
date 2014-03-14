@@ -63,7 +63,7 @@ public class FailureExperiment {
     //    		failureExperiment_Random(true);
         		workLoadInsertionExperiment(true);
         		freeTimeInsertionExperiment(true);
-//            auctionExperiment(true);
+            auctionExperiment(true);
 //    freeTime_negotiatingExperiment(true);
 //    workload_negotiatingExperiment(true);
 //        negotiatingExperiment(false);
@@ -184,7 +184,7 @@ public class FailureExperiment {
     MASConfiguration config;
     if(failuresEnabled){
       config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(failureScenarios, objectiveFunction, config, 150, "insertion.txt");
+      performExperiment(failureScenarios, objectiveFunction, config, 150, "baseline.txt");
 
     }
     else{
@@ -209,7 +209,7 @@ public class FailureExperiment {
     MASConfiguration config;
     if(failuresEnabled){
       config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(failureScenarios, objectiveFunction, config, 150, "workload_insertion.txt");
+      performExperiment(failureScenarios, objectiveFunction, config, 150, "workload.txt");
 
     }
     else{
@@ -266,7 +266,7 @@ public class FailureExperiment {
     MASConfiguration config;
     if(failuresEnabled){
       config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(failureScenarios, objectiveFunction, config, 150, "freetimeinsertion.txt");
+      performExperiment(failureScenarios, objectiveFunction, config, 150, "freetime.txt");
 
     }
     else{
@@ -300,7 +300,7 @@ public class FailureExperiment {
         .addScenarios(onlineScenarios)
         .addConfiguration(config)				
         .withRandomSeed(320)
-        .repeat(runs).usePostProcessor(new FailurePostProcessor())
+        .repeat(10).usePostProcessor(new FailurePostProcessor())
         .withThreads(10)
         //        .showGui()
         .perform();

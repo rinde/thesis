@@ -1,16 +1,9 @@
 package failures;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.measure.Measure;
-import javax.measure.quantity.Duration;
-import javax.measure.quantity.Length;
-import javax.measure.unit.Unit;
-
-import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
@@ -129,11 +122,10 @@ public class DefaultFailureModel implements FailureModel {
 		this.travelTimeDistribution=new NormalDistribution(random, 1.0, 4.0, NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
 		
 	}
-	//TODO: make configurable
 	public static SupplierRng<DefaultFailureModel> supplier() {
 		return new DefaultSupplierRng<DefaultFailureModel>() {
 			public DefaultFailureModel get (long seed) {
-				DefaultFailureModel failureModel = new DefaultFailureModel(seed,1,15,3600000,600000);
+				DefaultFailureModel failureModel = new DefaultFailureModel(seed,0.6,15,3600000,600000);
 				return failureModel;
 				
 			}

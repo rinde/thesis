@@ -75,7 +75,7 @@ public class Analyser {
   private void printAverageFailures(double[] costsPerFailure,
       int[] amountOfEventsPerFailure, ArrayList<ArrayList<Double>> data, String name) throws FileNotFoundException, UnsupportedEncodingException {
     PrintWriter writer = new PrintWriter(name,"UTF-8");
-    
+    writer.println("Cost std sum");
     for (int i = 1; i < amountOfEventsPerFailure.length; i++) {
       Double[] allCost = data.get(i).toArray(new Double[1]);
       double[] costs = new double[allCost.length];
@@ -91,9 +91,10 @@ public class Analyser {
       double std = standardDeviation.evaluate(costs);
       int amount = amountOfEventsPerFailure[i];
       double average = costsPerFailure[i]/amount;
-      if(amount>5){
+      if(amount>0){
         
-        writer.println("Amount of failures: "+i+". Samples: "+amount+". Average: "+average+". Std: "+std);
+        double addition = average+std;
+        writer.println(average + " " + std + " " + addition);
       }
     }
     writer.close();
