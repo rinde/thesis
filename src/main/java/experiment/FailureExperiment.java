@@ -61,9 +61,9 @@ public class FailureExperiment {
     //		gendreau();
     //    		failureExperiment_Random(false);
     //    		failureExperiment_Random(true);
-        		workLoadInsertionExperiment(true);
-        		freeTimeInsertionExperiment(true);
-            auctionExperiment(true);
+        		workLoadInsertionExperiment(false);
+        		freeTimeInsertionExperiment(false);
+            auctionExperiment(false);
 //    freeTime_negotiatingExperiment(true);
 //    workload_negotiatingExperiment(true);
 //        negotiatingExperiment(false);
@@ -214,7 +214,7 @@ public class FailureExperiment {
     }
     else{
       config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(offlineScenarios, objectiveFunction, config, 150, "x.txt");
+      performExperiment(offlineScenarios, objectiveFunction, config, 30, "x.txt");
 
     }
   }
@@ -271,7 +271,7 @@ public class FailureExperiment {
     }
     else{
       config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(onlineScenarios, objectiveFunction, config, 150, "x.txt");
+      performExperiment(onlineScenarios, objectiveFunction, config, 30, "x.txt");
 
     }
   }
@@ -300,7 +300,7 @@ public class FailureExperiment {
         .addScenarios(onlineScenarios)
         .addConfiguration(config)				
         .withRandomSeed(320)
-        .repeat(10).usePostProcessor(new FailurePostProcessor())
+        .repeat(runs).usePostProcessor(new FailurePostProcessor())
         .withThreads(10)
         //        .showGui()
         .perform();

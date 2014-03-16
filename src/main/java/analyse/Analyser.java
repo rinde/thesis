@@ -14,7 +14,7 @@ public class Analyser {
 
   public Analyser(String fileName) {
     // TODO Auto-generated constructor stub
-//    getAverage();
+    //    getAverage();
     averageFailures(fileName);
   }
 
@@ -28,6 +28,7 @@ public class Analyser {
 
   private double sum;
   private int amount;
+  private int sampleSize=30;
   private double getMean() {
     // TODO Auto-generated method stub
     return sum/amount;
@@ -35,9 +36,9 @@ public class Analyser {
   private void averageFailures(String name){
     BufferedReader br = null;
     try {
- 
+
       String sCurrentLine;
- 
+
       br = new BufferedReader(new FileReader("result.txt"));
       br.readLine();
       double[] costsPerFailure = new double[10];
@@ -53,15 +54,15 @@ public class Analyser {
         }
         double cost = Double.valueOf(splitStrings[4]);
         int amountOfFailures = Integer.valueOf(splitStrings[splitStrings.length-1]);
-        if(amountOfFailures<data.size()){
+        if(amountOfFailures<data.size()&&amountOfEventsPerFailure[amountOfFailures]<this.sampleSize){
           data.get(amountOfFailures).add(cost);
           costsPerFailure[amountOfFailures]+=cost;
           amountOfEventsPerFailure[amountOfFailures]++;
         }
       }
       printAverageFailures(costsPerFailure,amountOfEventsPerFailure,data,name);
-      
- 
+
+
     } catch (IOException e) {
       e.printStackTrace();
     } finally {
@@ -78,27 +79,31 @@ public class Analyser {
     writer.println("Cost std sum");
     for (int i = 1; i < amountOfEventsPerFailure.length; i++) {
       Double[] allCost = data.get(i).toArray(new Double[1]);
-      double[] costs = new double[allCost.length];
-      for (int j = 0; j < costs.length; j++) {
+      int amount = amountOfEventsPerFailure[i];     
+      if(amount<sampleSize){
+        System.out.println(i+" not enough samples");
+        continue;
+      }
+      else{
+        amount=sampleSize;
+      }
+      double[] costs = new double[amount];
+      for (int j = 0; j < amount; j++) {
         try{
           costs[j] =allCost[j];
         }
         catch(NullPointerException e){
-          
+
         }
       }
       StandardDeviation standardDeviation= new StandardDeviation();
       double std = standardDeviation.evaluate(costs);
-      int amount = amountOfEventsPerFailure[i];
       double average = costsPerFailure[i]/amount;
-      if(amount>0){
-        
-        double addition = average+std;
-        writer.println(average + " " + std + " " + addition);
-      }
+      double addition = average+std;
+      writer.println(average + " " + std + " " + addition);
     }
     writer.close();
-    
+
   }
 
 
@@ -106,9 +111,9 @@ public class Analyser {
   private void readInput() {
     BufferedReader br = null;
     try {
- 
+
       String sCurrentLine;
- 
+
       br = new BufferedReader(new FileReader("input.txt"));
       br.readLine();
       while ((sCurrentLine = br.readLine()) != null) {
@@ -116,9 +121,9 @@ public class Analyser {
         String cost = splitStrings[4];
         this.sum+=Double.valueOf(cost);
         amount++;
-        
+
       }
- 
+
     } catch (IOException e) {
       e.printStackTrace();
     } finally {
