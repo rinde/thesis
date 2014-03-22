@@ -1,48 +1,75 @@
-?read.table
-ls
-debug("script.r")
-baseline<-read.table("insertion.txt",header=TRUE)
+install.packages("irace")
+package.install("xtable")
+irace
+install.packages("rJava")
+system.file("jri",package="rJava")
+./configure
+baseline1<-read.table("baseline1.txt",header=TRUE)
+baseline1
+baseline2<-read.table("baseline2.txt",header=TRUE)
+baseline3<-read.table("baseline3.txt",header=TRUE)
+baseline2
+m1<-merge(baseline1,baseline2,baseline3,by="amountoffailures")
+m1<-rbind(baseline1,baseline2,baseline3)
+m1
+m1[!duplicated(df), ]
+duplicated(m1)
+m1[!duplicated(m1), ]
+m2<-unique(m1[ ,2])
+m2
+m2<-unique(m1[,1])
+m2
+duplicated(m1)
+m <- matrix(runif(100),10,10)#
+m[c(2,5,9),1] <- 1#
+m[!duplicated(m[,1]),]
+m <- matrix(runif(100),10,10)
+m
+duplicated(m1[,1])
+m1[!duplicated(m1[,1]), ]
+baseline1<-read.table("baseline1.txt",header=TRUE)#
+baseline2<-read.table("baseline2.txt",header=TRUE)#
+baseline3<-read.table("baseline3.txt",header=TRUE)#
+baseline<-rbind(baseline1,baseline2,baseline3)#
+baseline<-baseline[!duplicated(baseline[,1]), ]#
+freetime1<-read.table("freetime1.txt",header=TRUE)#
+freetime2<-read.table("freetime2.txt",header=TRUE)#
+freetime3<-read.table("freetime3.txt",header=TRUE)#
+freetime<-rbind(freetime1,freetime2,freetime3)#
+freetime<-freetime[!duplicated(freetime[,1]), ]#
+workload1<-read.table("workload1.txt",header=TRUE)#
+workload2<-read.table("workload2.txt",header=TRUE)#
+workload3<-read.table("workload3.txt",header=TRUE)#
+workload<-rbind(workload1,workload2,workload3)
+workload
+workload<-workload[!duplicated(workload[,1]), ]
+workload
 baseline
-baseline$sum
-plot(baseline$sum)
-vector<-as.vector(baseline$sum)
-vector
-matrix<-as.matrix(baseline$sum)
-matrix
-vector[1]
-baseline$sum[1]
-2+baseline$sum[1]
-vector[1]+2
-as.number(baseline$sum[1])
-as.numeric(baseline$sum[1])
-as.numeric(baseline$sum[1])+1
-baseline$sum/2
-vector/2
-numbers<-as.numeric(vector)
-numbers
-max(basline)
-max(baseline)
+freetime
+freetime
 baseline
-b<-read.table("insertion.txt")
-b
-max(b)
-b$sum
-b[1]
-b[2]
-b[2][1]
-b[2]*2
-b[2]
-test<-as.vector(b[3])
-test
-test*2
-test[1]*2
-b
-baseline<-read.table("insertion.txt",header=TRUE)
+range(0,1,2,3)
 baseline
-max(basline)
-max(baseline)
-baseline$sum
-baseline$sum/2
-baseline$sum
-baseline$sum[1]
-?legend
+ggplot(baseline, aes(x = factor(amountoffailures), y = cost)) +  #
+  geom_bar(position = position_dodge()) + #
+  geom_errorbar(aes(ymin=val-std, ymax=val+std))
+library(ggplot2)
+library(ggplot)
+install.packages("ggplot")
+install.packages("ggplot2")
+ggplot(baseline, aes(x = factor(amountoffailures), y = cost)) +  #
+  geom_bar(position = position_dodge()) + #
+  geom_errorbar(aes(ymin=val-std, ymax=val+std))
+ggplot2(baseline, aes(x = factor(amountoffailures), y = cost)) +  #
+  geom_bar(position = position_dodge()) + #
+  geom_errorbar(aes(ymin=val-std, ymax=val+std))
+library(ggplot2)
+ggplot2(baseline, aes(x = factor(amountoffailures), y = cost)) +  #
+  geom_bar(position = position_dodge()) + #
+  geom_errorbar(aes(ymin=val-std, ymax=val+std))
+ggplot(baseline, aes(x = factor(amountoffailures), y = cost)) +  #
+  geom_bar(position = position_dodge()) + #
+  geom_errorbar(aes(ymin=val-std, ymax=val+std))
+ggplot(baseline, aes(x = factor(amountoffailures), y = cost)) +  #
+  geom_bar(position = position_dodge()) + #
+  geom_errorbar(aes(ymin=cost-std, ymax=cost+std))

@@ -11,7 +11,9 @@ import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 
 public class Analyser {
-
+//  public static void main(String[] args){
+//    new Analyser("test.txt");
+//  }
   public Analyser(String fileName) {
     // TODO Auto-generated constructor stub
     //    getAverage();
@@ -28,7 +30,7 @@ public class Analyser {
 
   private double sum;
   private int amount;
-  private int sampleSize=30;
+  private int sampleSize=20;
   private double getMean() {
     // TODO Auto-generated method stub
     return sum/amount;
@@ -76,7 +78,7 @@ public class Analyser {
   private void printAverageFailures(double[] costsPerFailure,
       int[] amountOfEventsPerFailure, ArrayList<ArrayList<Double>> data, String name) throws FileNotFoundException, UnsupportedEncodingException {
     PrintWriter writer = new PrintWriter(name,"UTF-8");
-    writer.println("Cost std sum");
+    writer.println("amountoffailures cost std sum");
     for (int i = 1; i < amountOfEventsPerFailure.length; i++) {
       Double[] allCost = data.get(i).toArray(new Double[1]);
       int amount = amountOfEventsPerFailure[i];     
@@ -87,6 +89,7 @@ public class Analyser {
       else{
         amount=sampleSize;
       }
+//      int step = amount/sampleSize;
       double[] costs = new double[amount];
       for (int j = 0; j < amount; j++) {
         try{
@@ -100,7 +103,7 @@ public class Analyser {
       double std = standardDeviation.evaluate(costs);
       double average = costsPerFailure[i]/amount;
       double addition = average+std;
-      writer.println(average + " " + std + " " + addition);
+      writer.println(i+" "+average + " " + std + " " + addition);
     }
     writer.close();
 

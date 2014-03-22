@@ -21,15 +21,9 @@ public class DefaultFailureModel implements FailureModel {
 							   
 	private HashMap<FallibleEntity,HashSet<FailureDTO>> failures = new HashMap<FallibleEntity, HashSet<FailureDTO>>();
 	private long currentTime;
-//	private ArrayList<Integer> failuresPerScenario = new ArrayList<Integer>();
-//	private int currentScenario=-1;
-//	private int currentTrucksInScenario;
-//	private int totalTrucksPerScenario=10;
 	private int numberFailures=0;
 	private int actualNumberOfFailures=0;
-	public void getFailuresPerScenario(){
-//	  System.out.println(numberFailures);
-	}
+
 
 	public boolean register(FallibleEntity element) {
 		element.setFailureModel(this);
@@ -47,18 +41,6 @@ public class DefaultFailureModel implements FailureModel {
 
 		}
 
-//		if(currentTrucksInScenario==totalTrucksPerScenario){
-//		  currentTrucksInScenario=0;
-//		  currentScenario++;
-//		  failuresPerScenario.add(0);
-//		}
-//		currentTrucksInScenario++;
-//		Integer current = failuresPerScenario.get(currentScenario)+amountOfFailures;
-//		this.numberFailures+=amountOfFailures;
-//		failuresPerScenario.add(currentScenario, current);
-//    if(currentTrucksInScenario==totalTrucksPerScenario){
-//      getFailuresPerScenario();
-//    }
 		return true;
 	}
 	private PoissonDistribution poisssonDistribution;
@@ -117,15 +99,14 @@ public class DefaultFailureModel implements FailureModel {
 		this.setFailureMeanPerDay(failureMeanPerDay);
 		this.setMaxFailures(maxFailures);
 		this.initializeFailureDurationDistribution(meanDuration, stdDuration);
-//		this.totalTrucksPerScenario=10;
-//		this.currentTrucksInScenario=this.totalTrucksPerScenario;
+
 		this.travelTimeDistribution=new NormalDistribution(random, 1.0, 4.0, NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
 		
 	}
-	public static SupplierRng<DefaultFailureModel> supplier() {
+	public static SupplierRng<DefaultFailureModel> supplier(final double failuremean) {
 		return new DefaultSupplierRng<DefaultFailureModel>() {
 			public DefaultFailureModel get (long seed) {
-				DefaultFailureModel failureModel = new DefaultFailureModel(seed,0.6,15,3600000,600000);
+				DefaultFailureModel failureModel = new DefaultFailureModel(seed,failuremean,15,3600000,600000);
 				return failureModel;
 				
 			}

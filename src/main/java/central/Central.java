@@ -97,7 +97,7 @@ public final class Central {
 
     @Override
     public ImmutableList<? extends SupplierRng<? extends Model<?>>> getModels() {
-      return ImmutableList.of(new CentralModelSupplier(solverCreator), DefaultFailureModel.supplier());
+      return ImmutableList.of(new CentralModelSupplier(solverCreator), DefaultFailureModel.supplier(0.4));
     }
 
     @Override
