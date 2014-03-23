@@ -29,17 +29,23 @@ title(ylab="Relative cost")
 legend(1,g_range[2],c("waiting time heuristic", "workload heuristic", "baseline"),cex=0.8,col=c("blue","red","black"),pch=21,lty=1)
 dev.off()
 pdf("baseline.pdf")
-ggplot(baseline, aes(x = factor(amountoffailures), y = cost)) +
-geom_bar(position = position_dodge()) +
-geom_errorbar(aes(ymin=cost-std, ymax=cost+std))
+
+ggplot(baseline, aes(x=factor(amountoffailures),ymin=min, lower=lower, middle=middle,upper=upper,ymax=max))+geom_boxplot(stat="identity")+xlab("Amount of failures")+ylab("Cost")
+
+
+#ggplot(baseline, aes(x = factor(amountoffailures), y = cost)) +
+#geom_bar(position = position_dodge()) +
+#geom_errorbar(aes(ymin=cost-std, ymax=cost+std))
 dev.off()
 pdf("workload.pdf")
-ggplot(workload, aes(x = factor(amountoffailures), y = cost)) +
-    geom_bar(position = position_dodge()) +
-    geom_errorbar(aes(ymin=cost-std, ymax=cost+std))
+ggplot(workload, aes(x=factor(amountoffailures),ymin=min, lower=lower, middle=middle,upper=upper,ymax=max))+geom_boxplot(stat="identity")+xlab("Amount of failures")+ylab("Cost")
+#ggplot(workload, aes(x = factor(amountoffailures), y = cost)) +
+#    geom_bar(position = position_dodge()) +
+#    geom_errorbar(aes(ymin=cost-std, ymax=cost+std))
 dev.off()
 pdf("freetime.pdf")
-ggplot(freetime, aes(x = factor(amountoffailures), y = cost)) +
-   geom_bar(position = position_dodge()) +
-   geom_errorbar(aes(ymin=cost-std, ymax=cost+std))
+ggplot(freetime, aes(x=factor(amountoffailures),ymin=min, lower=lower, middle=middle,upper=upper,ymax=max))+geom_boxplot(stat="identity")+xlab("Amount of failures")+ylab("Cost")
+#ggplot(freetime, aes(x = factor(amountoffailures), y = cost)) +
+#   geom_bar(position = position_dodge()) +
+#   geom_errorbar(aes(ymin=cost-std, ymax=cost+std))
 dev.off()

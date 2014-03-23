@@ -61,9 +61,9 @@ public class FailureExperiment {
     //		gendreau();
     //    		failureExperiment_Random(false);
     //    		failureExperiment_Random(true);
-    //workLoadInsertionExperiment(false);
-    freeTimeInsertionExperiment(false);
-    //auctionExperiment(false);
+    workLoadInsertionExperiment(true);
+    freeTimeInsertionExperiment(true);
+    auctionExperiment(true);
     //    freeTime_negotiatingExperiment(true);
     //    workload_negotiatingExperiment(true);
     //        negotiatingExperiment(false);
@@ -250,7 +250,7 @@ public class FailureExperiment {
 
   private static List<Gendreau06Scenario> createScenarios() {
     return Gendreau06Parser.parser()
-        .addFile("scenarios/req_rapide_1_450_24").allowDiversion()
+        .addFile("scenarios/req_rapide_2_240_24").allowDiversion()
         .parse();
   }
   public static void freeTimeInsertionExperiment(boolean failuresEnabled){

@@ -6,8 +6,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 
 
 public class Analyser {
@@ -78,7 +83,7 @@ public class Analyser {
   private void printAverageFailures(double[] costsPerFailure,
       int[] amountOfEventsPerFailure, ArrayList<ArrayList<Double>> data, String name) throws FileNotFoundException, UnsupportedEncodingException {
     PrintWriter writer = new PrintWriter(name,"UTF-8");
-    writer.println("amountoffailures cost std sum");
+    writer.println("amountoffailures cost std min lower middle upper max sum");
     for (int i = 1; i < amountOfEventsPerFailure.length; i++) {
       Double[] allCost = data.get(i).toArray(new Double[1]);
       int amount = amountOfEventsPerFailure[i];     
@@ -99,11 +104,18 @@ public class Analyser {
 
         }
       }
+      Percentile p = new Percentile();
+      double median = p.evaluate(costs);
+      List<Double> asList = Arrays.asList(ArrayUtils.toObject(costs));
+      double min = Collections.min(asList);
+      double lower=p.evaluate(costs, 25);
+      double upper = p.evaluate(costs,75);
+      double max = Collections.max(asList);
       StandardDeviation standardDeviation= new StandardDeviation();
       double std = standardDeviation.evaluate(costs);
       double average = costsPerFailure[i]/amount;
       double addition = average+std;
-      writer.println(i+" "+average + " " + std + " " + addition);
+      writer.println(i+" "+average + " " + std + " "+" "+min+" "+lower+" "+median+" "+upper+" "+max+" " + addition);
     }
     writer.close();
 
