@@ -15,14 +15,28 @@ workload3<-read.table("workload3.txt",header=TRUE)
 workload<-rbind(workload1,workload2,workload3)
 workload<-workload[!duplicated(workload[,1]), ]
 rel_freetime<-freetime$sum/baseline$sum[1]
+rel_freetime_self<-freetime$sum/freetime$sum[1]
 rel_workload<-workload$sum/baseline$sum[1]
+rel_workload_self<-workload$sum/workload$sum[1]
 rel_baseline<-baseline$sum/baseline$sum[1]
+rel_baseline_self<-rel_baseline
 g_range <- range(0, rel_freetime,rel_baseline, rel_workload)
 x_range <- range(0,length(rel_baseline)-1,length(rel_freetime)-1,length(rel_workload)-1)
 pdf("relative_comparisson.pdf")
 plot(x=c(0:(length(rel_baseline)-1)),y=rel_baseline, type="o",col="black",xlim=x_range, ylim=g_range,ann=FALSE)
 lines(x=c(0:(length(rel_workload)-1)),y=rel_workload, type="o",col="red")
 lines(x=c(0:(length(rel_freetime)-1)),y=rel_freetime,type="o",col="blue")
+title(main="Relative comparisson")
+title(xlab="Number of failures")
+title(ylab="Relative cost")
+legend(1,g_range[2],c("waiting time heuristic", "workload heuristic", "baseline"),cex=0.8,col=c("blue","red","black"),pch=21,lty=1)
+dev.off()
+g_range_self <- range(0, rel_freetime_self,rel_baseline_self, rel_workload_self)
+x_range_self <- range(0,length(rel_baseline_self)-1,length(rel_freetime_self)-1,length(rel_workload_self)-1)
+pdf("relative_comparisson_self.pdf")
+plot(x=c(0:(length(rel_baseline_self)-1)),y=rel_baseline_self, type="o",col="black",xlim=x_range_self, ylim=g_range_self,ann=FALSE)
+lines(x=c(0:(length(rel_workload_self)-1)),y=rel_workload_self, type="o",col="red")
+lines(x=c(0:(length(rel_freetime_self)-1)),y=rel_freetime_self,type="o",col="blue")
 title(main="Relative comparisson")
 title(xlab="Number of failures")
 title(ylab="Relative cost")
