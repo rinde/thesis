@@ -1,1 +1,1 @@
-amountoffailures cost std sum
+amountoffailures cost std min lower middle upper max sum

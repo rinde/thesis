@@ -7,11 +7,15 @@ import heuristics.WorkloadObjectiveFunction;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 
 import rinde.logistics.pdptw.mas.TruckConfiguration;
 import rinde.logistics.pdptw.mas.comm.AuctionCommModel;
@@ -250,7 +254,7 @@ public class FailureExperiment {
 
   private static List<Gendreau06Scenario> createScenarios() {
     return Gendreau06Parser.parser()
-        .addFile("scenarios/req_rapide_2_240_24").allowDiversion()
+        .addFile("scenarios/req_rapide_1_240_24").allowDiversion()
         .parse();
   }
   public static void freeTimeInsertionExperiment(boolean failuresEnabled){
@@ -352,13 +356,32 @@ public class FailureExperiment {
     double mean = costSum / results.results.size();
     StandardDeviation standardDeviation= new StandardDeviation();
     double std = standardDeviation.evaluate(costValues);
+    Percentile p = new Percentile();
+    double median = p.evaluate(costValues);
+    List<Double> asList = Arrays.asList(ArrayUtils.toObject(costValues));
+    double min = Collections.min(asList);
+    double lower=p.evaluate(costValues, 25);
+    double upper = p.evaluate(costValues,75);
+    double max = Collections.max(asList);
+    double sum= mean+std;
+    
     //    System.out.println(results.results.size());
     final StringBuilder sb = table.get(masconfig, probclass);
     sb.append(mean);
-    sb.append("std=");
+    sb.append(" ");
     sb.append(std);
-
-
+    sb.append(" ");
+    sb.append(min);
+    sb.append(" ");
+    sb.append(lower);
+    sb.append(" ");
+    sb.append(median);
+    sb.append(" ");
+    sb.append(upper);
+    sb.append(" ");
+    sb.append(max);
+    sb.append(" ");
+    sb.append(sum);
 
     final Set<Cell<MASConfiguration, ProblemClass, StringBuilder>> set = table
         .cellSet();

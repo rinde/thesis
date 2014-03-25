@@ -35,14 +35,21 @@ public class DefaultFailureModel implements FailureModel {
 		}
 		numberFailures+=amountOfFailures;
 		for(int i=0; i<amountOfFailures;i++){
-			long start = (long) (random.nextDouble()*lengthOfDay);
-			long duration = (long) this.normalDistribution.sample();
+		  long duration = getFailureDuration();
+
+			long start = (long) (random.nextDouble()*(lengthOfDay-duration));
 			this.failures.get(element).add(new FailureDTO (new TimeWindow(start, start+duration)));
 
 		}
 
 		return true;
 	}
+  private long getFailureDuration() {
+//    long duration = (long) this.normalDistribution.sample();
+    long duration = (long) this.normalDistribution.getMean();
+
+    return duration;
+  }
 	private PoissonDistribution poisssonDistribution;
 	private NormalDistribution normalDistribution;
 	private NormalDistribution travelTimeDistribution;
