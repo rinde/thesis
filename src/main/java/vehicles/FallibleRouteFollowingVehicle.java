@@ -63,7 +63,7 @@ public class FallibleRouteFollowingVehicle extends RouteFollowingVehicle impleme
           .addTransition(gotoState, FailureEvent.FAILURE, failState)
 //          .addTransition(failState, DefaultEvent.GOTO, gotoState)
           .addTransition(failState, FailureEvent.RECOVERY, waitState)
-          .addTransitionsFrom(fsm)
+          .addTransitionsFrom(fsm).explicitRecursiveTransitions()
           .build();
 
   }

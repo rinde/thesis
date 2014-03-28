@@ -1,6 +1,10 @@
 package failures;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import rinde.logistics.pdptw.mas.comm.SolverBidder;
+import rinde.sim.event.Event;
 import rinde.sim.pdptw.central.Solver;
 import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.pdptw.common.ObjectiveFunction;
@@ -12,6 +16,7 @@ public class FailureSolverBidder extends SolverBidder {
   public FailureSolverBidder(ObjectiveFunction objFunc, Solver s) {
     // TODO Auto-generated constructor stub
     super(objFunc,s);
+    LOGGER.trace("trace");
   }
   @Override
   public double getBidFor(DefaultParcel p, long time) {
@@ -26,6 +31,15 @@ public class FailureSolverBidder extends SolverBidder {
     return super.getBidFor(p, time);
     
     
+  }
+  public void update(Collection<DefaultParcel> newRoute){
+    this.assignedParcels.clear();
+    this.claimedParcels.clear();
+//    for(DefaultParcel p:newRoute){
+//      this.assignedParcels.add(p);
+//    }
+    eventDispatcher
+    .dispatchEvent(new Event(CommunicatorEventType.CHANGE, this));
   }
   public static SupplierRng<SolverBidder> supplier(
       final ObjectiveFunction objFunc,

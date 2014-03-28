@@ -19,13 +19,15 @@ public class PDPFailureRoadModel extends PDPRoadModel implements FallibleRoadMod
   public PDPFailureRoadModel(AbstractRoadModel<?> rm,
       boolean allowVehicleDiversion) {
     super(rm, allowVehicleDiversion);
+    
+    LOGGER.trace("trace");
     // TODO Auto-generated constructor stub
   }
   @Override
   public void registerModelProvider(ModelProvider mp) {
     super.registerModelProvider(mp);
     failureModel =mp.getModel(FailureModel.class);
-
+    
 
   }
   @Override

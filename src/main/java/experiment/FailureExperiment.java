@@ -65,15 +65,22 @@ public class FailureExperiment {
     //		gendreau();
     //    		failureExperiment_Random(false);
     //    		failureExperiment_Random(true);
+
     workLoadInsertionExperiment(true);
     freeTimeInsertionExperiment(true);
-    auctionExperiment(true);
-    //    freeTime_negotiatingExperiment(true);
-    //    workload_negotiatingExperiment(true);
-    //        negotiatingExperiment(false);
-    //        		centralExperiment(false);
+    auctionExperiment(false);
+//
+        freeTime_negotiatingExperiment(true);
+        workload_negotiatingExperiment(true);
+            negotiatingExperiment(true);
+//            		centralExperiment(true);
     //        combinedHeuristicsInsertionExperiment(true);
 
+  }
+  private static List<Gendreau06Scenario> createScenarios() {
+    return Gendreau06Parser.parser()
+        .addFile("scenarios/req_rapide_2_240_24").allowDiversion()
+        .parse();
   }
 
 
@@ -110,67 +117,35 @@ public class FailureExperiment {
     return failureScenarios;
   }
   public static void negotiatingExperiment(boolean failuresEnabled){
-    final List<Gendreau06Scenario> offlineScenarios = createScenarios();
-    List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
+
     Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
 
-    SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplier(MultiVehicleHeuristicSolver.supplier(200, 50000));
 
     SupplierRng<? extends Communicator> communicatorSupplier= NegotiatingBidder.supplier(objectiveFunction, MultiVehicleHeuristicSolver.supplier(20,10000), MultiVehicleHeuristicSolver.supplier(200, 50000), 2, SelectNegotiatorsHeuristic.FIRST_DESTINATION_POSITION) ;
 
-
-    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(0.4),AuctionCommModel.supplier());
-    MASConfiguration config;
-    if(failuresEnabled){
-      config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(failureScenarios, objectiveFunction, config, 150, "negotiating.txt");
-    }
-    else{
-      config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(offlineScenarios, objectiveFunction, config, 30, "negotiating.txt");
-    }
+    String fileName= "baseline";
+    runExperiments(failuresEnabled, communicatorSupplier, fileName);
   }
   public static void freeTime_negotiatingExperiment(boolean failuresEnabled){
-    final List<Gendreau06Scenario> offlineScenarios = createScenarios();
-    List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
-    Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
 
-    SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplier(MultiVehicleHeuristicSolver.supplier(200, 50000));
     Gendreau06ObjectiveFunction heuristicObjectiveFunction = new FreeTimeObjectiveFunction();
+
 
     SupplierRng<? extends Communicator> communicatorSupplier= FailureNegotiatingBidder.supplier(heuristicObjectiveFunction, MultiVehicleHeuristicSolver.supplier(20,10000), MultiVehicleHeuristicSolver.supplier(200, 50000), 2, SelectNegotiatorsHeuristic.FIRST_DESTINATION_POSITION) ;
 
-    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(0.4),AuctionCommModel.supplier());
-    MASConfiguration config;
-    if(failuresEnabled){
-      config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(failureScenarios, objectiveFunction, config, 150, "freetime_negotiating.txt");
-    }
-    else{
-      config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(offlineScenarios, objectiveFunction, config, 30, "x.txt");
-    }
+    String fileName= "freetime";
+    runExperiments(failuresEnabled, communicatorSupplier, fileName);
+    
   }
-  public static void workload_negotiatingExperiment(boolean failuresEnabled){
-    final List<Gendreau06Scenario> offlineScenarios = createScenarios();
-    List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
-    Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
 
-    SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplier(MultiVehicleHeuristicSolver.supplier(200, 50000));
+  public static void workload_negotiatingExperiment(boolean failuresEnabled){
     Gendreau06ObjectiveFunction heuristicObjectiveFunction = new WorkloadObjectiveFunction();
 
     SupplierRng<? extends Communicator> communicatorSupplier= FailureNegotiatingBidder.supplier(heuristicObjectiveFunction, MultiVehicleHeuristicSolver.supplier(20,10000), MultiVehicleHeuristicSolver.supplier(200, 50000), 2, SelectNegotiatorsHeuristic.FIRST_DESTINATION_POSITION) ;
 
-    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(0.4),AuctionCommModel.supplier());
-    MASConfiguration config;
-    if(failuresEnabled){
-      config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(failureScenarios, objectiveFunction, config, 100, "workload_negotiating.txt");
-    }
-    else{
-      config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-      performExperiment(offlineScenarios, objectiveFunction, config, 30, "x.txt");
-    }
+    String fileName= "workload";
+    runExperiments(failuresEnabled, communicatorSupplier, fileName);
+
   }
   public static void auctionExperiment(boolean failuresEnabled){
     Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
@@ -196,7 +171,7 @@ public class FailureExperiment {
       SupplierRng<? extends Communicator> communicatorSupplier, String fileName) {
 
     runOneExperiment(failuresEnabled, communicatorSupplier, fileName+"1.txt",
-        0.2);
+        2);
     if(failuresEnabled){
       runOneExperiment(failuresEnabled, communicatorSupplier, fileName+"2.txt",
           0.5);
@@ -252,11 +227,7 @@ public class FailureExperiment {
     }
   }
 
-  private static List<Gendreau06Scenario> createScenarios() {
-    return Gendreau06Parser.parser()
-        .addFile("scenarios/req_rapide_1_240_24").allowDiversion()
-        .parse();
-  }
+
   public static void freeTimeInsertionExperiment(boolean failuresEnabled){
 
     Gendreau06ObjectiveFunction heuristicObjectiveFunction = new FreeTimeObjectiveFunction();
@@ -294,7 +265,7 @@ public class FailureExperiment {
         .withRandomSeed(320)
         .repeat(runs).usePostProcessor(new FailurePostProcessor())
         .withThreads(10)
-        //        .showGui()
+//                .showGui()
         .perform();
     writeGendreauResults(offlineResults);
     new Analyser(fileName);
