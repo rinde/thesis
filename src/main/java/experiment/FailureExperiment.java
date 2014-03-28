@@ -13,6 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import models.ReAuctionCommModel;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
@@ -29,6 +31,7 @@ import rinde.logistics.pdptw.mas.route.SolverRoutePlanner;
 import rinde.logistics.pdptw.solver.CheapestInsertionHeuristic;
 import rinde.logistics.pdptw.solver.MultiVehicleHeuristicSolver;
 import rinde.sim.core.model.Model;
+import rinde.sim.pdptw.central.RandomSolver;
 import rinde.sim.pdptw.common.DynamicPDPTWScenario;
 import rinde.sim.pdptw.common.DynamicPDPTWScenario.ProblemClass;
 import rinde.sim.pdptw.experiment.Experiment;
@@ -68,39 +71,23 @@ public class FailureExperiment {
 
     workLoadInsertionExperiment(true);
     freeTimeInsertionExperiment(true);
-    auctionExperiment(false);
+    auctionExperiment(true);
 //
-        freeTime_negotiatingExperiment(true);
-        workload_negotiatingExperiment(true);
-            negotiatingExperiment(true);
+//        freeTime_negotiatingExperiment(true);
+//        workload_negotiatingExperiment(true);
+//            negotiatingExperiment(true);
 //            		centralExperiment(true);
     //        combinedHeuristicsInsertionExperiment(true);
 
   }
   private static List<Gendreau06Scenario> createScenarios() {
     return Gendreau06Parser.parser()
-        .addFile("scenarios/req_rapide_2_240_24").allowDiversion()
+        .addFile("scenarios/req_rapide_2_240_24")
         .parse();
   }
 
 
-  public static void failureExperiment_Random(boolean failuresEnabled){
-    List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
-    Gendreau06ObjectiveFunction objectiveFunction = new Gendreau06ObjectiveFunction();
-    SupplierRng<? extends RoutePlanner> routePlannerSupplier=RandomRoutePlanner.supplier();
-    SupplierRng<? extends Communicator> communicatorSupplier= RandomBidder.supplier() ;
 
-    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(DefaultFailureModel.supplier(0.4),AuctionCommModel.supplier());
-    MASConfiguration config;
-    if(failuresEnabled){
-      config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-    }
-    else{
-
-      config = new TruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
-    }
-    performExperiment(failureScenarios, objectiveFunction, config, 150, "random.txt");
-  }
 
   private static List<DynamicPDPTWScenario> createFailureScenarios() {
     final List<Gendreau06Scenario> onlineScenarios = createScenarios();
@@ -171,7 +158,7 @@ public class FailureExperiment {
       SupplierRng<? extends Communicator> communicatorSupplier, String fileName) {
 
     runOneExperiment(failuresEnabled, communicatorSupplier, fileName+"1.txt",
-        2);
+        0.2);
     if(failuresEnabled){
       runOneExperiment(failuresEnabled, communicatorSupplier, fileName+"2.txt",
           0.5);
@@ -186,10 +173,10 @@ public class FailureExperiment {
 
     final List<Gendreau06Scenario> offlineScenarios = createScenarios();
     List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
-    SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplier(MultiVehicleHeuristicSolver.supplier(60, 200));
+    SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplier(MultiVehicleHeuristicSolver.supplier(20, 200));
 
     SupplierRng<DefaultFailureModel> failureModel = DefaultFailureModel.supplier(failuremean);
-    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(failureModel,AuctionCommModel.supplier());
+    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(failureModel,ReAuctionCommModel.supplier());
     MASConfiguration config;
     if(failuresEnabled){
       config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
@@ -264,7 +251,7 @@ public class FailureExperiment {
         .addConfiguration(config)				
         .withRandomSeed(320)
         .repeat(runs).usePostProcessor(new FailurePostProcessor())
-        .withThreads(10)
+        .withThreads(1)
 //                .showGui()
         .perform();
     writeGendreauResults(offlineResults);
