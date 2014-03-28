@@ -68,7 +68,7 @@ public class FailureExperiment {
 
     workLoadInsertionExperiment(true);
     freeTimeInsertionExperiment(true);
-    auctionExperiment(false);
+    auctionExperiment(true);
 //
         freeTime_negotiatingExperiment(true);
         workload_negotiatingExperiment(true);
@@ -171,7 +171,7 @@ public class FailureExperiment {
       SupplierRng<? extends Communicator> communicatorSupplier, String fileName) {
 
     runOneExperiment(failuresEnabled, communicatorSupplier, fileName+"1.txt",
-        2);
+        0.2);
     if(failuresEnabled){
       runOneExperiment(failuresEnabled, communicatorSupplier, fileName+"2.txt",
           0.5);
@@ -186,7 +186,7 @@ public class FailureExperiment {
 
     final List<Gendreau06Scenario> offlineScenarios = createScenarios();
     List<DynamicPDPTWScenario> failureScenarios = createFailureScenarios();
-    SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplier(MultiVehicleHeuristicSolver.supplier(60, 200));
+    SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplierWithoutCurrentRoutes(MultiVehicleHeuristicSolver.supplier(60, 200));
 
     SupplierRng<DefaultFailureModel> failureModel = DefaultFailureModel.supplier(failuremean);
     ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(failureModel,AuctionCommModel.supplier());
@@ -264,7 +264,7 @@ public class FailureExperiment {
         .addConfiguration(config)				
         .withRandomSeed(320)
         .repeat(runs).usePostProcessor(new FailurePostProcessor())
-        .withThreads(10)
+        .withThreads(1)
 //                .showGui()
         .perform();
     writeGendreauResults(offlineResults);

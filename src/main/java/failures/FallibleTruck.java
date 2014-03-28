@@ -9,7 +9,6 @@ import rinde.logistics.pdptw.mas.Truck;
 import rinde.logistics.pdptw.mas.comm.Communicator;
 import rinde.logistics.pdptw.mas.comm.Communicator.CommunicatorEventType;
 import rinde.logistics.pdptw.mas.route.RoutePlanner;
-import rinde.logistics.pdptw.mas.route.SolverRoutePlanner;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel.ParcelState;
 import rinde.sim.core.model.pdp.Parcel;
@@ -18,6 +17,7 @@ import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.pdptw.common.RouteFollowingVehicle;
 import rinde.sim.pdptw.common.VehicleDTO;
 import rinde.sim.util.fsm.StateMachine;
+import rinde.sim.util.fsm.StateMachine.StateTransitionEvent;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -87,7 +87,34 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 			}
 		}
 	}
-	
+  @Override
+  public void handleEvent(Event e) {
+    if (e.getEventType() == CommunicatorEventType.CHANGE) {
+      super.handleEvent(e);
+      return;
+    }
+    final StateTransitionEvent<StateEvent, RouteFollowingVehicle> event = (StateTransitionEvent<StateEvent, RouteFollowingVehicle>) e;
+
+    if(event.event==FailureEvent.FAILURE){
+      if (!pdpModel.get().getParcelState(gotoState.getPreviousDestination())
+          .isPickedUp()) {
+        getCommunicator().unclaim(gotoState.getPreviousDestination());
+      }
+    }
+//    else if(event.event==FailureEvent.RECOVERY){
+//      final DefaultParcel cur = getRoute().iterator().next();
+//      LOGGER.trace("event: "+e + "currentDestination: " + cur);
+//
+//      if (!pdpModel.get().getParcelState(cur).isPickedUp()) {
+//        getCommunicator().claim(cur);
+//      }
+//    }
+    else{
+      super.handleEvent(e);
+    }
+
+
+  }
   public List<Parcel> getLoadedParcels(){
     ImmutableSet<Parcel> contents = this.pdpModel.get().getContents(this);
     Collection<DefaultParcel> oldRoute = this.getRoute();
@@ -116,9 +143,9 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 		@Override
 	  public void onEntry(StateEvent event, RouteFollowingVehicle context) {		  
 //      LinkedList<DefaultParcel> newRoute =new LinkedList<DefaultParcel>();
-//
+////
 //		  List<Parcel> loadedParcels = getLoadedParcels();
-//		  
+////		  
 //      for(Parcel p: loadedParcels){
 //        
 //        if(p instanceof DefaultParcel){
@@ -129,7 +156,7 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 //      }
 //      setRoute(newRoute);
 //      updateRoute();
-//		  ((FailureSolverBidder) getCommunicator()).release();
+		  ((FailureSolverBidder) getCommunicator()).release();
 			failureModel.indicateIsFailing();
 
 		}
