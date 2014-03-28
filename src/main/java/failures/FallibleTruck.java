@@ -115,20 +115,21 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 		}
 		@Override
 	  public void onEntry(StateEvent event, RouteFollowingVehicle context) {		  
-      LinkedList<DefaultParcel> newRoute =new LinkedList<DefaultParcel>();
-
-		  List<Parcel> loadedParcels = getLoadedParcels();
-		  
-      for(Parcel p: loadedParcels){
-        
-        if(p instanceof DefaultParcel){
-          DefaultParcel parcel = (DefaultParcel) p;
-          newRoute.add(parcel);
-        }
-       
-      }
-      setRoute(newRoute);
-      updateRoute();
+//      LinkedList<DefaultParcel> newRoute =new LinkedList<DefaultParcel>();
+//
+//		  List<Parcel> loadedParcels = getLoadedParcels();
+//		  
+//      for(Parcel p: loadedParcels){
+//        
+//        if(p instanceof DefaultParcel){
+//          DefaultParcel parcel = (DefaultParcel) p;
+//          newRoute.add(parcel);
+//        }
+//       
+//      }
+//      setRoute(newRoute);
+//      updateRoute();
+//		  ((FailureSolverBidder) getCommunicator()).release();
 			failureModel.indicateIsFailing();
 
 		}

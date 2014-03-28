@@ -79,7 +79,7 @@ public class FailureExperiment {
   }
   private static List<Gendreau06Scenario> createScenarios() {
     return Gendreau06Parser.parser()
-        .addFile("scenarios/req_rapide_2_240_24").allowDiversion()
+        .addFile("scenarios/req_rapide_2_240_24")
         .parse();
   }
 

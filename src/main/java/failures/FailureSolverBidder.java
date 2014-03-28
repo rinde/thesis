@@ -32,9 +32,9 @@ public class FailureSolverBidder extends SolverBidder {
     
     
   }
-  public void update(Collection<DefaultParcel> newRoute){
+  public void release(){
     this.assignedParcels.clear();
-    this.claimedParcels.clear();
+//    this.claimedParcels.clear();
 //    for(DefaultParcel p:newRoute){
 //      this.assignedParcels.add(p);
 //    }

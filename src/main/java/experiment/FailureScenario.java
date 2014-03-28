@@ -55,7 +55,7 @@ public class FailureScenario extends DynamicPDPTWScenario{
 	@Override
 	public RoadModel createRoadModel() {
 		PlaneRoadModel roadModel = new PlaneRoadModel(MIN, MAX, 50);
-		PDPFailureRoadModel failureRoadModel = new PDPFailureRoadModel(roadModel, true);
+		PDPFailureRoadModel failureRoadModel = new PDPFailureRoadModel(roadModel, false);
 		return failureRoadModel;
 //    return new PDPRoadModel(new PlaneRoadModel(MIN, MAX, getDistanceUnit(),
 //        MAX_SPEED), true);
