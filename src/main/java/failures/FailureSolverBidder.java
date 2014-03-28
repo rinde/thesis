@@ -1,5 +1,8 @@
 package failures;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import rinde.logistics.pdptw.mas.comm.SolverBidder;
 import rinde.sim.event.Event;
 import rinde.sim.pdptw.central.Solver;
@@ -29,11 +32,12 @@ public class FailureSolverBidder extends SolverBidder {
     
     
   }
-  public void release(){
+  public void update(Collection<DefaultParcel> newRoute){
     this.assignedParcels.clear();
-//    this.claimedParcels.clear();
-
-
+    this.claimedParcels.clear();
+//    for(DefaultParcel p:newRoute){
+//      this.assignedParcels.add(p);
+//    }
     eventDispatcher
     .dispatchEvent(new Event(CommunicatorEventType.CHANGE, this));
   }
