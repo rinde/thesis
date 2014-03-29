@@ -1,9 +1,11 @@
 package failures;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import rinde.logistics.pdptw.mas.Truck;
 import rinde.logistics.pdptw.mas.comm.Communicator;
@@ -119,16 +121,37 @@ public class FallibleTruck extends Truck implements FallibleEntity {
     ImmutableSet<Parcel> contents = this.pdpModel.get().getContents(this);
     Collection<DefaultParcel> oldRoute = this.getRoute();
     List<Parcel> result = new LinkedList<Parcel>();
-
+    Set<Parcel> difference = new HashSet<Parcel>();
     for(DefaultParcel p:oldRoute){
       ParcelState state = pdpModel.get().getParcelState(p);
       if(contents.contains(p)&& !result.contains(p)&&state.isPickedUp()){
         result.add(p);
       }
+      else{
+        difference.add(p);
+      }
 
 
     }
     return result;
+  }
+  public Set<Parcel> getNonLoadedParcels(){
+    ImmutableSet<Parcel> contents = this.pdpModel.get().getContents(this);
+    Collection<DefaultParcel> oldRoute = this.getRoute();
+    List<Parcel> result = new LinkedList<Parcel>();
+    Set<Parcel> difference = new HashSet<Parcel>();
+    for(DefaultParcel p:oldRoute){
+      ParcelState state = pdpModel.get().getParcelState(p);
+      if(contents.contains(p)&& !result.contains(p)&&state.isPickedUp()){
+        result.add(p);
+      }
+      else{
+        difference.add(p);
+      }
+
+
+    }
+    return difference;
   }
 
 
@@ -144,7 +167,8 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 	  public void onEntry(StateEvent event, RouteFollowingVehicle context) {		  
 //      LinkedList<DefaultParcel> newRoute =new LinkedList<DefaultParcel>();
 ////
-//		  List<Parcel> loadedParcels = getLoadedParcels();
+		  List<Parcel> loadedParcels = getLoadedParcels();
+		  Set<Parcel> nonLoadedParcels = getNonLoadedParcels();
 ////		  
 //      for(Parcel p: loadedParcels){
 //        
@@ -156,6 +180,7 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 //      }
 //      setRoute(newRoute);
 //      updateRoute();
+		  
 		  ((FailureSolverBidder) getCommunicator()).release();
 			failureModel.indicateIsFailing();
 

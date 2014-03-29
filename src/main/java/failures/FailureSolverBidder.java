@@ -1,9 +1,10 @@
 package failures;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 import rinde.logistics.pdptw.mas.comm.SolverBidder;
+import rinde.sim.core.model.pdp.PDPModel;
+import rinde.sim.core.model.pdp.PDPModel.PDPModelEventType;
+import rinde.sim.core.model.pdp.PDPModelEvent;
+import rinde.sim.core.model.pdp.Parcel;
 import rinde.sim.event.Event;
 import rinde.sim.pdptw.central.Solver;
 import rinde.sim.pdptw.common.DefaultParcel;
@@ -37,6 +38,7 @@ public class FailureSolverBidder extends SolverBidder {
     eventDispatcher
     .dispatchEvent(new Event(CommunicatorEventType.CHANGE, this));
   }
+
   public static SupplierRng<SolverBidder> supplier(
       final ObjectiveFunction objFunc,
       final SupplierRng<? extends Solver> solverSupplier) {

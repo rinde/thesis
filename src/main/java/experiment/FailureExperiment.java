@@ -13,6 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import models.ReAuctionCommModel;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
@@ -189,7 +191,7 @@ public class FailureExperiment {
     SupplierRng<? extends RoutePlanner> routePlannerSupplier=SolverRoutePlanner.supplierWithoutCurrentRoutes(MultiVehicleHeuristicSolver.supplier(60, 200));
 
     SupplierRng<DefaultFailureModel> failureModel = DefaultFailureModel.supplier(failuremean);
-    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(failureModel,AuctionCommModel.supplier());
+    ImmutableList<? extends SupplierRng<? extends Model<?>>> modelSuppliers  = ImmutableList.of(failureModel,ReAuctionCommModel.supplier());
     MASConfiguration config;
     if(failuresEnabled){
       config = new FailureTruckConfiguration(routePlannerSupplier, communicatorSupplier, modelSuppliers);
@@ -265,7 +267,7 @@ public class FailureExperiment {
         .withRandomSeed(320)
         .repeat(runs).usePostProcessor(new FailurePostProcessor())
         .withThreads(1)
-//                .showGui()
+                .showGui()
         .perform();
     writeGendreauResults(offlineResults);
     new Analyser(fileName);
