@@ -72,9 +72,9 @@ public class FailureExperiment {
     freeTimeInsertionExperiment(true);
     auctionExperiment(true);
 //
-        freeTime_negotiatingExperiment(true);
-        workload_negotiatingExperiment(true);
-            negotiatingExperiment(true);
+//        freeTime_negotiatingExperiment(true);
+//        workload_negotiatingExperiment(true);
+//            negotiatingExperiment(true);
 //            		centralExperiment(true);
     //        combinedHeuristicsInsertionExperiment(true);
 
@@ -267,7 +267,7 @@ public class FailureExperiment {
         .withRandomSeed(320)
         .repeat(runs).usePostProcessor(new FailurePostProcessor())
         .withThreads(1)
-                .showGui()
+//                .showGui()
         .perform();
     writeGendreauResults(offlineResults);
     new Analyser(fileName);

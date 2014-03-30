@@ -1,8 +1,13 @@
 package failures;
 
 import java.util.Arrays;
+import java.util.Set;
 
+import models.ReAuctionCommModel;
 import rinde.logistics.pdptw.mas.comm.NegotiatingBidder;
+import rinde.logistics.pdptw.mas.comm.Communicator.CommunicatorEventType;
+import rinde.sim.core.model.pdp.Parcel;
+import rinde.sim.event.Event;
 import rinde.sim.pdptw.central.Solver;
 import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.pdptw.common.ObjectiveFunction;
@@ -11,7 +16,7 @@ import rinde.sim.util.SupplierRng.DefaultSupplierRng;
 
 import com.google.common.base.Joiner;
 
-public class FailureNegotiatingBidder extends NegotiatingBidder {
+public class FailureNegotiatingBidder extends NegotiatingBidder implements FallibleBidder{
 
   public FailureNegotiatingBidder(ObjectiveFunction objFunc, Solver s1,
       Solver s2, int numOfNegotiators, SelectNegotiatorsHeuristic h) {
@@ -51,6 +56,21 @@ public class FailureNegotiatingBidder extends NegotiatingBidder {
       }
     };
   }
-
+  @Override
+  public void release() {
+    // TODO Auto-generated method stub
+    this.assignedParcels.clear(); 
+    eventDispatcher
+    .dispatchEvent(new Event(CommunicatorEventType.CHANGE, this));
+  }
+  private ReAuctionCommModel reauctions;
+  @Override
+  public void setAuctionModel(ReAuctionCommModel reAuctionCommModel) {
+    // TODO Auto-generated method stub
+    reauctions=reAuctionCommModel;
+  }
+  public void reauction(Set<DefaultParcel> parcels,long time){
+    this.reauctions.reauction(parcels, time);
+  }
 
 }

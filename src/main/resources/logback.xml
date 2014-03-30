@@ -23,7 +23,7 @@
 	<logger name="rinde.logistics" level="TRACE" />
 	<logger name="rinde.sim.pdptw" level="TRACE" />
 	<root level="INFO">
-		<appender-ref ref="STDOUT" />
+<!-- 		<appender-ref ref="STDOUT" /> -->
 		<appender-ref ref="FILE" />
 
 	</root>

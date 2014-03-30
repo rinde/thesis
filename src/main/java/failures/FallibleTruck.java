@@ -135,18 +135,21 @@ public class FallibleTruck extends Truck implements FallibleEntity {
     }
     return result;
   }
-  public Set<Parcel> getNonLoadedParcels(){
+  public Set<DefaultParcel> getNonLoadedParcels(){
     ImmutableSet<Parcel> contents = this.pdpModel.get().getContents(this);
     Collection<DefaultParcel> oldRoute = this.getRoute();
-    List<Parcel> result = new LinkedList<Parcel>();
-    Set<Parcel> difference = new HashSet<Parcel>();
+    List<DefaultParcel> result = new LinkedList<DefaultParcel>();
+    Set<DefaultParcel> difference = new HashSet<DefaultParcel>();
     for(DefaultParcel p:oldRoute){
       ParcelState state = pdpModel.get().getParcelState(p);
       if(contents.contains(p)&& !result.contains(p)&&state.isPickedUp()){
         result.add(p);
       }
       else{
-        difference.add(p);
+        
+        if(p!=null){
+          difference.add(p);
+        }
       }
 
 
@@ -160,15 +163,20 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 	protected class Failing extends AbstractTruckState{
 		public boolean failing=false;
 		Parcel currentlyBeingDropped;
+		private Set<DefaultParcel> toReauction;
+		boolean reauctioned = false;
 		public Failing(){
 
 		}
 		@Override
-	  public void onEntry(StateEvent event, RouteFollowingVehicle context) {		  
+	  public void onEntry(StateEvent event, RouteFollowingVehicle context) {		
+		  reauctioned=false;
 //      LinkedList<DefaultParcel> newRoute =new LinkedList<DefaultParcel>();
 ////
 		  List<Parcel> loadedParcels = getLoadedParcels();
-		  Set<Parcel> nonLoadedParcels = getNonLoadedParcels();
+		  Set<DefaultParcel> nonLoadedParcels = getNonLoadedParcels();
+		  toReauction=nonLoadedParcels;
+		  
 ////		  
 //      for(Parcel p: loadedParcels){
 //        
@@ -181,7 +189,8 @@ public class FallibleTruck extends Truck implements FallibleEntity {
 //      setRoute(newRoute);
 //      updateRoute();
 		  
-		  ((FailureSolverBidder) getCommunicator()).release();
+		  ((FallibleBidder) getCommunicator()).release();
+
 			failureModel.indicateIsFailing();
 
 		}
@@ -196,9 +205,17 @@ public class FallibleTruck extends Truck implements FallibleEntity {
     }
 		@Override
 		public void onExit(StateEvent event, RouteFollowingVehicle context){
+		  System.out.println();
+
 		}
 		@Override
 		public StateEvent handle(StateEvent event, RouteFollowingVehicle context) {
+		  if(!reauctioned){
+	      ((FallibleBidder) getCommunicator()).reauction(toReauction,getCurrentTime().getTime());
+
+		    reauctioned = true;
+		  }
+
 		  getCurrentTime().consumeAll();
 
 		  if(event==null&&!failing){
