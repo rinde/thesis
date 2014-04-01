@@ -1,2 +1,3 @@
-
-rinlog.log
+target/
+*.log
+.DS_Store
